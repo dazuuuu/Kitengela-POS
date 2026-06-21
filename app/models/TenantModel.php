@@ -1,0 +1,56 @@
+<?php
+// app/models/TenantModel.php
+namespace Models;
+
+/**
+ * The tenant record itself. NOT tenant-scoped (it predates/defines the scope),
+ * so $tenantScoped is false and queries are addressed by tenant id explicitly.
+ */
+class TenantModel extends Model
+{
+    protected string $table = 'tenants';
+    protected bool $tenantScoped = false;
+
+    public function create(string $name, string $slug): int
+    {
+        return $this->insert(['name' => $name, 'slug' => $slug, 'status' => 'active']);
+    }
+
+    public function setOwner(int $tenantId, int $userId): bool
+    {
+        return $this->update($tenantId, ['owner_user_id' => $userId]);
+    }
+
+    /** Whitelisted business-settings update. Caller passes their own tenant id. */
+    public function updateSettings(int $tenantId, array $data): bool
+    {
+        $allowed = ['name', 'logo_path', 'currency', 'phone', 'address', 'receipt_footer'];
+        $clean = array_intersect_key($data, array_flip($allowed));
+        if (!$clean) {
+            return false;
+        }
+        return $this->update($tenantId, $clean);
+    }
+
+    /** Unique slug from a business name. */
+    public function uniqueSlug(string $name): string
+    {
+        $base = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($name)), '-');
+        if ($base === '') {
+            $base = 'shop';
+        }
+        $slug = $base;
+        $i = 1;
+        while ($this->slugExists($slug)) {
+            $slug = $base . '-' . (++$i);
+        }
+        return $slug;
+    }
+
+    private function slugExists(string $slug): bool
+    {
+        $stmt = $this->db->prepare('SELECT 1 FROM tenants WHERE slug = ? LIMIT 1');
+        $stmt->execute([$slug]);
+        return (bool) $stmt->fetchColumn();
+    }
+}

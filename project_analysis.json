@@ -1,0 +1,1172 @@
+{
+    "directories": {
+        "\\.git": {
+            "name": ".git",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\.git",
+            "type": "other"
+        },
+        "\\app": {
+            "name": "app",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app",
+            "type": "other"
+        },
+        "\\app\\config": {
+            "name": "config",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\config",
+            "type": "config"
+        },
+        "\\app\\controllers": {
+            "name": "controllers",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\controllers",
+            "type": "controller"
+        },
+        "\\app\\helpers": {
+            "name": "helpers",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\helpers",
+            "type": "helper"
+        },
+        "\\app\\models": {
+            "name": "models",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\models",
+            "type": "model"
+        },
+        "\\app\\services": {
+            "name": "services",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\services",
+            "type": "service"
+        },
+        "\\app\\services\\emails": {
+            "name": "emails",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\services\\emails",
+            "type": "service"
+        },
+        "\\app\\templates": {
+            "name": "templates",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\templates",
+            "type": "view"
+        },
+        "\\app\\templates\\auth": {
+            "name": "auth",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\templates\\auth",
+            "type": "view"
+        },
+        "\\app\\templates\\layouts": {
+            "name": "layouts",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\app\\templates\\layouts",
+            "type": "view"
+        },
+        "\\databases": {
+            "name": "databases",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\databases",
+            "type": "database"
+        },
+        "\\databases\\migrations": {
+            "name": "migrations",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\databases\\migrations",
+            "type": "database"
+        },
+        "\\public": {
+            "name": "public",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public",
+            "type": "public"
+        },
+        "\\public\\about": {
+            "name": "about",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\about",
+            "type": "public"
+        },
+        "\\public\\admin": {
+            "name": "admin",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin",
+            "type": "public"
+        },
+        "\\public\\admin\\blogs": {
+            "name": "blogs",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\blogs",
+            "type": "public"
+        },
+        "\\public\\admin\\enquiries": {
+            "name": "enquiries",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\enquiries",
+            "type": "public"
+        },
+        "\\public\\admin\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\gallery",
+            "type": "public"
+        },
+        "\\public\\admin\\projects": {
+            "name": "projects",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\projects",
+            "type": "public"
+        },
+        "\\public\\admin\\services": {
+            "name": "services",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\services",
+            "type": "public"
+        },
+        "\\public\\admin\\settings": {
+            "name": "settings",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\settings",
+            "type": "config"
+        },
+        "\\public\\admin\\testimonials": {
+            "name": "testimonials",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\admin\\testimonials",
+            "type": "public"
+        },
+        "\\public\\api": {
+            "name": "api",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api",
+            "type": "public"
+        },
+        "\\public\\api\\_lib": {
+            "name": "_lib",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\_lib",
+            "type": "public"
+        },
+        "\\public\\api\\billing": {
+            "name": "billing",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\billing",
+            "type": "public"
+        },
+        "\\public\\api\\blog": {
+            "name": "blog",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\blog",
+            "type": "public"
+        },
+        "\\public\\api\\enquiry": {
+            "name": "enquiry",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\enquiry",
+            "type": "public"
+        },
+        "\\public\\api\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\gallery",
+            "type": "public"
+        },
+        "\\public\\api\\services": {
+            "name": "services",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\api\\services",
+            "type": "public"
+        },
+        "\\public\\assets": {
+            "name": "assets",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets",
+            "type": "public"
+        },
+        "\\public\\assets\\css": {
+            "name": "css",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets\\css",
+            "type": "public"
+        },
+        "\\public\\assets\\images": {
+            "name": "images",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets\\images",
+            "type": "public"
+        },
+        "\\public\\assets\\images\\branding": {
+            "name": "branding",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets\\images\\branding",
+            "type": "public"
+        },
+        "\\public\\assets\\images\\logo": {
+            "name": "logo",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets\\images\\logo",
+            "type": "public"
+        },
+        "\\public\\assets\\js": {
+            "name": "js",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\assets\\js",
+            "type": "public"
+        },
+        "\\public\\auth": {
+            "name": "auth",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\auth",
+            "type": "public"
+        },
+        "\\public\\blogs": {
+            "name": "blogs",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\blogs",
+            "type": "public"
+        },
+        "\\public\\components": {
+            "name": "components",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\components",
+            "type": "public"
+        },
+        "\\public\\components\\admin": {
+            "name": "admin",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\components\\admin",
+            "type": "public"
+        },
+        "\\public\\components\\public": {
+            "name": "public",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\components\\public",
+            "type": "public"
+        },
+        "\\public\\components\\staff": {
+            "name": "staff",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\components\\staff",
+            "type": "public"
+        },
+        "\\public\\components\\tenants": {
+            "name": "tenants",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\components\\tenants",
+            "type": "public"
+        },
+        "\\public\\contact": {
+            "name": "contact",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\contact",
+            "type": "public"
+        },
+        "\\public\\devs": {
+            "name": "devs",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\devs",
+            "type": "public"
+        },
+        "\\public\\feedback": {
+            "name": "feedback",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\feedback",
+            "type": "database"
+        },
+        "\\public\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\gallery",
+            "type": "public"
+        },
+        "\\public\\profile": {
+            "name": "profile",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\profile",
+            "type": "public"
+        },
+        "\\public\\profile\\admin": {
+            "name": "admin",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\profile\\admin",
+            "type": "public"
+        },
+        "\\public\\profile\\client": {
+            "name": "client",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\profile\\client",
+            "type": "public"
+        },
+        "\\public\\projects": {
+            "name": "projects",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\projects",
+            "type": "public"
+        },
+        "\\public\\services": {
+            "name": "services",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\services",
+            "type": "public"
+        },
+        "\\public\\super": {
+            "name": "super",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\super",
+            "type": "public"
+        },
+        "\\public\\super\\dashboard": {
+            "name": "dashboard",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\super\\dashboard",
+            "type": "public"
+        },
+        "\\public\\super\\profile": {
+            "name": "profile",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\super\\profile",
+            "type": "public"
+        },
+        "\\public\\templates": {
+            "name": "templates",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates",
+            "type": "view"
+        },
+        "\\public\\templates\\admin": {
+            "name": "admin",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\admin",
+            "type": "view"
+        },
+        "\\public\\templates\\auth": {
+            "name": "auth",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\auth",
+            "type": "view"
+        },
+        "\\public\\templates\\client": {
+            "name": "client",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\client",
+            "type": "view"
+        },
+        "\\public\\templates\\public": {
+            "name": "public",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\public",
+            "type": "view"
+        },
+        "\\public\\templates\\staff": {
+            "name": "staff",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\staff",
+            "type": "view"
+        },
+        "\\public\\templates\\tenants": {
+            "name": "tenants",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\templates\\tenants",
+            "type": "view"
+        },
+        "\\public\\uploads": {
+            "name": "uploads",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads",
+            "type": "public"
+        },
+        "\\public\\uploads\\blogs": {
+            "name": "blogs",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\blogs",
+            "type": "public"
+        },
+        "\\public\\uploads\\branding": {
+            "name": "branding",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\branding",
+            "type": "public"
+        },
+        "\\public\\uploads\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\gallery",
+            "type": "public"
+        },
+        "\\public\\uploads\\products": {
+            "name": "products",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\products",
+            "type": "public"
+        },
+        "\\public\\uploads\\projects": {
+            "name": "projects",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\projects",
+            "type": "public"
+        },
+        "\\public\\uploads\\projects\\covers": {
+            "name": "covers",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\projects\\covers",
+            "type": "public"
+        },
+        "\\public\\uploads\\projects\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\projects\\gallery",
+            "type": "public"
+        },
+        "\\public\\uploads\\services": {
+            "name": "services",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\services",
+            "type": "public"
+        },
+        "\\public\\uploads\\services\\covers": {
+            "name": "covers",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\services\\covers",
+            "type": "public"
+        },
+        "\\public\\uploads\\services\\gallery": {
+            "name": "gallery",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\services\\gallery",
+            "type": "public"
+        },
+        "\\public\\uploads\\services\\sections": {
+            "name": "sections",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\services\\sections",
+            "type": "public"
+        },
+        "\\public\\uploads\\store": {
+            "name": "store",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\store",
+            "type": "public"
+        },
+        "\\public\\uploads\\store\\categories": {
+            "name": "categories",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\store\\categories",
+            "type": "public"
+        },
+        "\\public\\uploads\\store\\products": {
+            "name": "products",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\uploads\\store\\products",
+            "type": "public"
+        },
+        "\\public\\verification": {
+            "name": "verification",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\public\\verification",
+            "type": "public"
+        },
+        "\\vendor": {
+            "name": "vendor",
+            "path": "C:\\Program Files\\Ampps\\www\\Modern\\vendor",
+            "type": "other"
+        }
+    },
+    "files": [],
+    "controllers": {
+        "\\app\\controllers\\AdminRegistrationController.php": {
+            "name": "AdminRegistrationController.php",
+            "path": "\\app\\controllers\\AdminRegistrationController.php",
+            "size": 2261,
+            "extension": "php",
+            "modified": "2026-05-30 16:59:42"
+        },
+        "\\app\\controllers\\AuthController.php": {
+            "name": "AuthController.php",
+            "path": "\\app\\controllers\\AuthController.php",
+            "size": 2902,
+            "extension": "php",
+            "modified": "2026-05-30 16:59:18"
+        },
+        "\\app\\controllers\\BlogController.php": {
+            "name": "BlogController.php",
+            "path": "\\app\\controllers\\BlogController.php",
+            "size": 13680,
+            "extension": "php",
+            "modified": "2026-06-03 16:48:02"
+        },
+        "\\app\\controllers\\EnquiryController.php": {
+            "name": "EnquiryController.php",
+            "path": "\\app\\controllers\\EnquiryController.php",
+            "size": 6030,
+            "extension": "php",
+            "modified": "2026-06-15 05:59:26"
+        },
+        "\\app\\controllers\\GalleryController.php": {
+            "name": "GalleryController.php",
+            "path": "\\app\\controllers\\GalleryController.php",
+            "size": 6472,
+            "extension": "php",
+            "modified": "2026-06-11 11:51:16"
+        },
+        "\\app\\controllers\\ProductController.php": {
+            "name": "ProductController.php",
+            "path": "\\app\\controllers\\ProductController.php",
+            "size": 8662,
+            "extension": "php",
+            "modified": "2026-06-11 11:51:28"
+        },
+        "\\app\\controllers\\ProjectController.php": {
+            "name": "ProjectController.php",
+            "path": "\\app\\controllers\\ProjectController.php",
+            "size": 10302,
+            "extension": "php",
+            "modified": "2026-05-30 20:08:38"
+        },
+        "\\app\\controllers\\ServiceController.php": {
+            "name": "ServiceController.php",
+            "path": "\\app\\controllers\\ServiceController.php",
+            "size": 14621,
+            "extension": "php",
+            "modified": "2026-06-03 17:04:50"
+        },
+        "\\app\\controllers\\TestimonialController.php": {
+            "name": "TestimonialController.php",
+            "path": "\\app\\controllers\\TestimonialController.php",
+            "size": 5554,
+            "extension": "php",
+            "modified": "2026-06-15 06:29:46"
+        },
+        "\\app\\controllers\\UserController.php": {
+            "name": "UserController.php",
+            "path": "\\app\\controllers\\UserController.php",
+            "size": 3451,
+            "extension": "php",
+            "modified": "2026-05-30 16:59:32"
+        }
+    },
+    "models": {
+        "\\app\\models\\BlogModel.php": {
+            "name": "BlogModel.php",
+            "path": "\\app\\models\\BlogModel.php",
+            "size": 12889,
+            "extension": "php",
+            "modified": "2026-06-03 16:46:44"
+        },
+        "\\app\\models\\Connection.php": {
+            "name": "Connection.php",
+            "path": "\\app\\models\\Connection.php",
+            "size": 1079,
+            "extension": "php",
+            "modified": "2026-05-30 16:58:32"
+        },
+        "\\app\\models\\EnquiryModel.php": {
+            "name": "EnquiryModel.php",
+            "path": "\\app\\models\\EnquiryModel.php",
+            "size": 6456,
+            "extension": "php",
+            "modified": "2026-06-15 05:58:58"
+        },
+        "\\app\\models\\GalleryModel.php": {
+            "name": "GalleryModel.php",
+            "path": "\\app\\models\\GalleryModel.php",
+            "size": 5298,
+            "extension": "php",
+            "modified": "2026-06-11 13:40:30"
+        },
+        "\\app\\models\\Model.php": {
+            "name": "Model.php",
+            "path": "\\app\\models\\Model.php",
+            "size": 5192,
+            "extension": "php",
+            "modified": "2026-06-20 05:06:51"
+        },
+        "\\app\\models\\ProjectModel.php": {
+            "name": "ProjectModel.php",
+            "path": "\\app\\models\\ProjectModel.php",
+            "size": 14117,
+            "extension": "php",
+            "modified": "2026-05-30 20:18:50"
+        },
+        "\\app\\models\\ServiceModel.php": {
+            "name": "ServiceModel.php",
+            "path": "\\app\\models\\ServiceModel.php",
+            "size": 6676,
+            "extension": "php",
+            "modified": "2026-06-03 17:07:28"
+        },
+        "\\app\\models\\Session.php": {
+            "name": "Session.php",
+            "path": "\\app\\models\\Session.php",
+            "size": 996,
+            "extension": "php",
+            "modified": "2026-06-02 09:52:58"
+        },
+        "\\app\\models\\SettingModel.php": {
+            "name": "SettingModel.php",
+            "path": "\\app\\models\\SettingModel.php",
+            "size": 6172,
+            "extension": "php",
+            "modified": "2026-06-07 18:58:28"
+        },
+        "\\app\\models\\StoreProductModel.php": {
+            "name": "StoreProductModel.php",
+            "path": "\\app\\models\\StoreProductModel.php",
+            "size": 8364,
+            "extension": "php",
+            "modified": "2026-06-11 14:19:29"
+        },
+        "\\app\\models\\SubscriptionModel.php": {
+            "name": "SubscriptionModel.php",
+            "path": "\\app\\models\\SubscriptionModel.php",
+            "size": 1468,
+            "extension": "php",
+            "modified": "2026-06-20 08:32:19"
+        },
+        "\\app\\models\\TenantModel.php": {
+            "name": "TenantModel.php",
+            "path": "\\app\\models\\TenantModel.php",
+            "size": 1777,
+            "extension": "php",
+            "modified": "2026-06-20 08:32:00"
+        },
+        "\\app\\models\\TestimonialModel.php": {
+            "name": "TestimonialModel.php",
+            "path": "\\app\\models\\TestimonialModel.php",
+            "size": 6668,
+            "extension": "php",
+            "modified": "2026-06-15 06:28:20"
+        },
+        "\\app\\models\\UserModel.php": {
+            "name": "UserModel.php",
+            "path": "\\app\\models\\UserModel.php",
+            "size": 3323,
+            "extension": "php",
+            "modified": "2026-05-30 17:15:58"
+        }
+    },
+    "views": {
+        "\\app\\templates\\auth\\login_form.php": {
+            "name": "login_form.php",
+            "path": "\\app\\templates\\auth\\login_form.php",
+            "size": 1350,
+            "extension": "php",
+            "modified": "2026-05-30 14:37:30"
+        },
+        "\\app\\templates\\auth\\register_form.php": {
+            "name": "register_form.php",
+            "path": "\\app\\templates\\auth\\register_form.php",
+            "size": 2433,
+            "extension": "php",
+            "modified": "2026-05-30 14:37:16"
+        },
+        "\\app\\templates\\layouts\\main.php": {
+            "name": "main.php",
+            "path": "\\app\\templates\\layouts\\main.php",
+            "size": 1612,
+            "extension": "php",
+            "modified": "2026-05-30 14:36:16"
+        },
+        "\\public\\admin\\enquiries\\view.php": {
+            "name": "view.php",
+            "path": "\\public\\admin\\enquiries\\view.php",
+            "size": 12179,
+            "extension": "php",
+            "modified": "2026-06-17 16:03:34"
+        },
+        "\\public\\admin\\projects\\view.php": {
+            "name": "view.php",
+            "path": "\\public\\admin\\projects\\view.php",
+            "size": 23981,
+            "extension": "php",
+            "modified": "2026-06-17 16:05:08"
+        },
+        "\\public\\templates\\admin\\layout.php": {
+            "name": "layout.php",
+            "path": "\\public\\templates\\admin\\layout.php",
+            "size": 23133,
+            "extension": "php",
+            "modified": "2026-06-17 16:25:42"
+        },
+        "\\public\\templates\\auth\\layout.php": {
+            "name": "layout.php",
+            "path": "\\public\\templates\\auth\\layout.php",
+            "size": 2505,
+            "extension": "php",
+            "modified": "2026-06-20 09:13:10"
+        },
+        "\\public\\templates\\client\\layout.php": {
+            "name": "layout.php",
+            "path": "\\public\\templates\\client\\layout.php",
+            "size": 16502,
+            "extension": "php",
+            "modified": "2026-06-17 16:27:00"
+        },
+        "\\public\\templates\\public\\layout.php": {
+            "name": "layout.php",
+            "path": "\\public\\templates\\public\\layout.php",
+            "size": 1762,
+            "extension": "php",
+            "modified": "2026-06-17 16:27:38"
+        },
+        "\\public\\templates\\public\\layout_footer.php": {
+            "name": "layout_footer.php",
+            "path": "\\public\\templates\\public\\layout_footer.php",
+            "size": 779,
+            "extension": "php",
+            "modified": "2026-06-07 19:01:24"
+        },
+        "\\public\\templates\\tenants\\layout.php": {
+            "name": "layout.php",
+            "path": "\\public\\templates\\tenants\\layout.php",
+            "size": 3005,
+            "extension": "php",
+            "modified": "2026-06-20 09:12:42"
+        }
+    },
+    "routes": [],
+    "configurations": {
+        "\\app\\config\\app.php": {
+            "name": "app.php",
+            "path": "\\app\\config\\app.php",
+            "size": 503,
+            "extension": "php",
+            "modified": "2026-06-20 09:30:38"
+        },
+        "\\app\\config\\database.php": {
+            "name": "database.php",
+            "path": "\\app\\config\\database.php",
+            "size": 194,
+            "extension": "php",
+            "modified": "2026-06-17 15:59:11"
+        },
+        "\\app\\config\\db_connect.php": {
+            "name": "db_connect.php",
+            "path": "\\app\\config\\db_connect.php",
+            "size": 565,
+            "extension": "php",
+            "modified": "2026-06-17 15:59:19"
+        },
+        "\\app\\config\\mail.php": {
+            "name": "mail.php",
+            "path": "\\app\\config\\mail.php",
+            "size": 973,
+            "extension": "php",
+            "modified": "2026-06-20 09:27:50"
+        },
+        "\\app\\config\\mpesa.php": {
+            "name": "mpesa.php",
+            "path": "\\app\\config\\mpesa.php",
+            "size": 1333,
+            "extension": "php",
+            "modified": "2026-06-20 11:31:19"
+        },
+        "\\app\\config\\mpesa_sample.php": {
+            "name": "mpesa_sample.php",
+            "path": "\\app\\config\\mpesa_sample.php",
+            "size": 1156,
+            "extension": "php",
+            "modified": "2026-06-20 11:31:06"
+        }
+    },
+    "database": {
+        "\\app\\config\\database.php": {
+            "name": "database.php",
+            "path": "\\app\\config\\database.php",
+            "size": 194,
+            "extension": "php",
+            "modified": "2026-06-17 15:59:11"
+        }
+    },
+    "third_party": [],
+    "custom_classes": {
+        "\\app\\bootstrap.php": {
+            "namespace": "to file path\r\n    $prefix = 'Controllers\\\\'",
+            "class_name": "bootstrap"
+        },
+        "\\app\\controllers\\AdminRegistrationController.php": {
+            "namespace": "Controllers",
+            "class_name": "AdminRegistrationController"
+        },
+        "\\app\\controllers\\AuthController.php": {
+            "namespace": "Controllers",
+            "class_name": "AuthController"
+        },
+        "\\app\\controllers\\UserController.php": {
+            "namespace": "Controllers",
+            "class_name": "UserController"
+        },
+        "\\app\\models\\Connection.php": {
+            "namespace": "Models",
+            "class_name": "Connection"
+        },
+        "\\app\\models\\Model.php": {
+            "namespace": "Models",
+            "class_name": "Model"
+        },
+        "\\app\\models\\SubscriptionModel.php": {
+            "namespace": "Models",
+            "class_name": "SubscriptionModel"
+        },
+        "\\app\\models\\TenantModel.php": {
+            "namespace": "Models",
+            "class_name": "TenantModel"
+        },
+        "\\bootstrap.php": {
+            "namespace": "to file path\r\n    $class = str_replace('\\\\', DIRECTORY_SEPARATOR, $class)",
+            "class_name": "bootstrap"
+        },
+        "\\structure.php": {
+            "namespace": "if (preg_match('\/namespace\\s+([^",
+            "class_name": "structure"
+        }
+    },
+    "dependencies": {
+        "\\app\\config\\mail.php": [
+            "an App Password (not your login password):\r\n\/\/   https:\/\/support.google.com\/accounts\/answer\/185833\r\n\/\/ For testing without sending real mail, use Mailtrap (https:\/\/mailtrap.io).\r\n\r\nreturn [\r\n    'transport'  => 'smtp',          \/\/ 'smtp' or 'mail' (PHP mail() \u2014 not recommended)\r\n\r\n    'host'       => 'smtp.gmail.com',\r\n    'port'       => 587,\r\n    'encryption' => 'tls',           \/\/ 'tls' (587) or 'ssl' (465) or '' for none\r\n    'username'   => 'njugunavickie7@gmail.com',\r\n    'password'   => 'ayyi uupe phww lval',\r\n\r\n    'from_email' => 'no-reply@isman.co.ke',\r\n    'from_name'  => 'Dazutech',\r\n    \/\/ Absolute filesystem path to the logo embedded in emails.\r\n    'logo_path'  => $_SERVER['DOCUMENT_ROOT'] . '\/Ismano\/public\/assets\/images\/logo\/logo.png',\r\n    \/\/ Used in email footers \/ links.\r\n    'site_url'   => 'https:\/\/isman.co.ke',\r\n    'support_email' => 'info@isman.co.ke',\r\n]"
+        ],
+        "\\app\\config\\mpesa.php": [
+            "a tunnel like ngrok:  ngrok http 80\r\n\/\/ then set callback_url to e.g. https:\/\/<id>.ngrok-free.app\/Ismano\/public\/api\/store\/checkout\/mpesa_callback.php\r\nreturn [\r\n    \/\/ 'sandbox' while testing, 'production' when live (Go-Live approved).\r\n    'env' => 'production',\r\n    'consumer_key'    => 'GfYzueAo3WaZGLx4pPPnQ1rmQR94LRhAfOZ4OvHFGw2rU1kl',\r\n    'consumer_secret' => 'cVrV7yIIKKcH18XbElAUdVVh1ooNA7SBLnIuatgI33T516xAd7LJs9wBzfB86RTw',\r\n    \/\/ Lipa Na M-Pesa Online (STK) credentials:\r\n    'shortcode' => '4167991',                 \/\/ sandbox Paybill test shortcode\r\n    'passkey'   => 'e35db45304b2ff88e830b2cf4b1d23d4ad09b9b0380377b276c4b78a25de1766',\r\n    \/\/ 'CustomerPayBillOnline' for Paybill, 'CustomerBuyGoodsOnline' for Till.\r\n    'transaction_type' => 'CustomerPayBillOnline',\r\n    'callback_url' => 'https:\/\/monkhood-outnumber-swept.ngrok-free.dev\/Modern\/public\/api\/billing\/mpesa_callback.php',\r\n\r\n        'cacert_path' => '',\r\n    'verify_ssl'  => false,   \/\/ LOCAL TESTING ONLY \u2014 set to true once a CA bundle is configured.\r\n    \r\n]"
+        ],
+        "\\app\\config\\mpesa_sample.php": [
+            "a tunnel like ngrok:  ngrok http 80\r\n\/\/ then set callback_url to e.g. https:\/\/<id>.ngrok-free.app\/Ismano\/public\/api\/store\/checkout\/mpesa_callback.php\r\nreturn [\r\n    \/\/ 'sandbox' while testing, 'production' when live (Go-Live approved).\r\n    'env' => 'production',\r\n    'consumer_key'    => '',\r\n    'consumer_secret' => '',\r\n    \/\/ Lipa Na M-Pesa Online (STK) credentials:\r\n    'shortcode' => '',                 \/\/ sandbox Paybill test shortcode\r\n    'passkey'   => '',\r\n    \/\/ 'CustomerPayBillOnline' for Paybill, 'CustomerBuyGoodsOnline' for Till.\r\n    'transaction_type' => 'CustomerPayBillOnline',\r\n    'callback_url' => 'https:\/\/monkhood-outnumber-swept.ngrok-free.dev\/Modern\/public\/api\/billing\/mpesa_callback.php',\r\n\r\n    \r\n        'cacert_path' => '',\r\n    'verify_ssl'  => false,   \/\/ LOCAL TESTING ONLY \u2014 set to true once a CA bundle is configured.\r\n    \r\n]"
+        ],
+        "\\app\\controllers\\AdminRegistrationController.php": [
+            "Models\\UserModel",
+            "Models\\SessionModel"
+        ],
+        "\\app\\controllers\\AuthController.php": [
+            "Models\\UserModel",
+            "Models\\SessionModel"
+        ],
+        "\\app\\controllers\\UserController.php": [
+            "Models\\UserModel",
+            "Models\\SessionModel"
+        ],
+        "\\app\\helpers\\AccountGuard.php": [
+            "the app, based on activation state\r\n\/\/ and subscription validity. Login and per-request middleware both consult this.\r\n\r\nclass AccountGuard\r\n{\r\n    \/** Days after period end the tenant can still log in (read-only handled in UI). *\/\r\n    const GRACE_DAYS = 0"
+        ],
+        "\\app\\models\\Connection.php": [
+            "PDO",
+            "PDOException"
+        ],
+        "\\app\\models\\Model.php": [
+            "PDO",
+            "RuntimeException"
+        ],
+        "\\app\\models\\SettingModel.php": [
+            "via\r\n\/\/ db_connect.php). Upserts are written DB-agnostically (SELECT then\r\n\/\/ INSERT\/UPDATE) so they behave identically on MySQL and during tests.\r\n\r\nclass SettingModel\r\n{\r\n    private PDO $pdo"
+        ],
+        "\\app\\models\\SubscriptionModel.php": [
+            "it's created\/activated\r\n * during registration (before any tenant context exists) and read by the\r\n * platform during billing"
+        ],
+        "\\app\\services\\AuthService.php": [
+            "Models\\SubscriptionModel",
+            "unique emails.) *\/\r\n    public function findByEmail(string $email): ?array\r\n    {\r\n        $stmt = $this->db->prepare(\r\n            'SELECT u.*, r.role_name\r\n             FROM users u JOIN roles r ON u.role_id = r.id\r\n             WHERE u.email = ? LIMIT 1'\r\n        )"
+        ],
+        "\\app\\services\\BillingService.php": [
+            "Models\\SubscriptionModel"
+        ],
+        "\\app\\services\\MailService.php": [
+            "PHPMailer\\PHPMailer\\PHPMailer",
+            "PHPMailer\\PHPMailer\\Exception as MailException"
+        ],
+        "\\app\\services\\RegistrationService.php": [
+            "Models\\TenantModel",
+            "Models\\SubscriptionModel"
+        ],
+        "\\public\\admin\\blogs\\edit.php": [
+            "post title<\/small>\r\n                    <\/div>\r\n                    <div class=\"mb-3\">\r\n                        <label class=\"form-label\">Meta Keywords<\/label>\r\n                        <input type=\"text\" name=\"meta_keywords\" class=\"form-control\" value=\"<?php echo htmlspecialchars($blog['meta_keywords'] ?? '')"
+        ],
+        "\\public\\admin\\projects\\view.php": [
+            "the buttons above to quickly change status<\/small>\r\n                        <\/div>\r\n                    <\/div>\r\n                    \r\n                    <div class=\"row mb-4\">\r\n                        <div class=\"col-md-6 mb-3\">\r\n                            <label class=\"form-label\">Small Title *<\/label>\r\n                            <input type=\"text\" name=\"small_title\" class=\"form-control\" value=\"<?php echo htmlspecialchars($project['small_title'])"
+        ],
+        "\\public\\admin\\settings\\edit.php": [
+            "lowercase letters, numbers, - or _).')",
+            "its built-in fallback images until you add some.<\/p>\r\n      <?php else: ?>\r\n        <?php foreach ($heroSlides as $s): ?>\r\n          <div class=\"slide\">\r\n            <img src=\"<?php echo htmlspecialchars(settings_asset_url($s['image_path']))"
+        ],
+        "\\public\\admin\\settings\\index.php": [
+            "its built-in fallback images.<\/p>\r\n      <?php endif"
+        ],
+        "\\public\\api\\billing\\mpesa_callback.php": [
+            "($mailer, $loginUrl) {\r\n        if (empty($info['email'])) { return"
+        ],
+        "\\public\\api\\services\\list.php": [
+            "Models\\ServiceModel"
+        ],
+        "\\public\\components\\public\\navbar.php": [
+            "strict'"
+        ],
+        "\\public\\components\\tenants\\sidebar.php": [
+            "($uri): string {\r\n    return strpos($uri, $needle) !== false ? 'active' : ''"
+        ],
+        "\\public\\devs\\test-register.php": [
+            "the test registration.'"
+        ],
+        "\\public\\devs\\test_api.php": [
+            "Controllers\\AuthController"
+        ],
+        "\\public\\feedback\\index.php": [
+            "empty values\r\n    }\r\n}\r\n\r\n\/\/ Handle form submission\r\n$formSubmitted = false"
+        ],
+        "\\public\\gallery\\index.php": [
+            "video on modal close *\/\r\n    document.querySelectorAll('.gp-modal').forEach(function (modal) {\r\n        modal.addEventListener('hidden.bs.modal', function () {\r\n            modal.querySelectorAll('video, iframe').forEach(function (el) {\r\n                if (el.tagName === 'VIDEO') {\r\n                    el.pause()"
+        ],
+        "\\public\\index.php": [
+            "strict'"
+        ],
+        "\\public\\projects\\index.php": [
+            "($category_filter, $categories) {\r\n        foreach ($categories as $cat) {\r\n            if ($cat['id'] == $p['category_id'] && $cat['category_slug'] == $category_filter) return true",
+            "($search) {\r\n        return stripos($p['small_title'],  $search) !== false\r\n            || stripos($p['major_title'],  $search) !== false\r\n            || stripos($p['description'],  $search) !== false"
+        ],
+        "\\public\\services\\index.php": [
+            "($search) {\r\n        return stripos($s['title'], $search) !== false\r\n            || stripos($s['short_description'], $search) !== false"
+        ],
+        "\\public\\templates\\admin\\layout.php": [
+            "strict'"
+        ],
+        "\\saas-conversion-helper.php": [
+            "($skipDirs) {\r\n                if ($current->isDir()) {\r\n                    return !should_skip_dir($current->getFilename(), $skipDirs)"
+        ],
+        "\\structure.php": [
+            "statements)\r\n        preg_match_all('\/use\\s+([^"
+        ]
+    },
+    "entry_points": {
+        "\\app\\app.php": {
+            "name": "app.php",
+            "path": "\\app\\app.php",
+            "size": 1287,
+            "extension": "php",
+            "modified": "2026-06-20 09:13:29"
+        },
+        "\\app\\bootstrap.php": {
+            "name": "bootstrap.php",
+            "path": "\\app\\bootstrap.php",
+            "size": 1220,
+            "extension": "php",
+            "modified": "2026-06-02 09:53:22"
+        },
+        "\\app\\config\\app.php": {
+            "name": "app.php",
+            "path": "\\app\\config\\app.php",
+            "size": 503,
+            "extension": "php",
+            "modified": "2026-06-20 09:30:38"
+        },
+        "\\app\\templates\\layouts\\main.php": {
+            "name": "main.php",
+            "path": "\\app\\templates\\layouts\\main.php",
+            "size": 1612,
+            "extension": "php",
+            "modified": "2026-05-30 14:36:16"
+        },
+        "\\bootstrap.php": {
+            "name": "bootstrap.php",
+            "path": "\\bootstrap.php",
+            "size": 690,
+            "extension": "php",
+            "modified": "2026-05-30 14:47:44"
+        },
+        "\\index.php": {
+            "name": "index.php",
+            "path": "\\index.php",
+            "size": 52,
+            "extension": "php",
+            "modified": "2026-06-17 16:28:18"
+        },
+        "\\public\\about\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\about\\index.php",
+            "size": 23107,
+            "extension": "php",
+            "modified": "2026-06-17 16:02:18"
+        },
+        "\\public\\admin\\blogs\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\blogs\\index.php",
+            "size": 10713,
+            "extension": "php",
+            "modified": "2026-06-17 16:03:14"
+        },
+        "\\public\\admin\\enquiries\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\enquiries\\index.php",
+            "size": 9832,
+            "extension": "php",
+            "modified": "2026-06-17 16:03:27"
+        },
+        "\\public\\admin\\gallery\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\gallery\\index.php",
+            "size": 6850,
+            "extension": "php",
+            "modified": "2026-06-17 16:03:50"
+        },
+        "\\public\\admin\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\index.php",
+            "size": 99,
+            "extension": "php",
+            "modified": "2026-06-17 16:07:01"
+        },
+        "\\public\\admin\\projects\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\projects\\index.php",
+            "size": 26833,
+            "extension": "php",
+            "modified": "2026-06-17 16:04:44"
+        },
+        "\\public\\admin\\services\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\services\\index.php",
+            "size": 12558,
+            "extension": "php",
+            "modified": "2026-06-17 16:05:38"
+        },
+        "\\public\\admin\\settings\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\settings\\index.php",
+            "size": 8371,
+            "extension": "php",
+            "modified": "2026-06-17 16:05:55"
+        },
+        "\\public\\admin\\testimonials\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\admin\\testimonials\\index.php",
+            "size": 10120,
+            "extension": "php",
+            "modified": "2026-06-17 16:06:39"
+        },
+        "\\public\\blogs\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\blogs\\index.php",
+            "size": 18997,
+            "extension": "php",
+            "modified": "2026-06-17 16:12:55"
+        },
+        "\\public\\contact\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\contact\\index.php",
+            "size": 13663,
+            "extension": "php",
+            "modified": "2026-06-08 06:01:58"
+        },
+        "\\public\\devs\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\devs\\index.php",
+            "size": 8075,
+            "extension": "php",
+            "modified": "2026-05-30 14:56:28"
+        },
+        "\\public\\feedback\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\feedback\\index.php",
+            "size": 10413,
+            "extension": "php",
+            "modified": "2026-06-15 06:30:32"
+        },
+        "\\public\\gallery\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\gallery\\index.php",
+            "size": 24331,
+            "extension": "php",
+            "modified": "2026-06-15 05:32:22"
+        },
+        "\\public\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\index.php",
+            "size": 24067,
+            "extension": "php",
+            "modified": "2026-06-20 11:03:04"
+        },
+        "\\public\\profile\\admin\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\profile\\admin\\index.php",
+            "size": 13934,
+            "extension": "php",
+            "modified": "2026-06-17 16:21:08"
+        },
+        "\\public\\profile\\client\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\profile\\client\\index.php",
+            "size": 9419,
+            "extension": "php",
+            "modified": "2026-06-17 16:21:32"
+        },
+        "\\public\\profile\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\profile\\index.php",
+            "size": 7422,
+            "extension": "php",
+            "modified": "2026-06-17 16:21:38"
+        },
+        "\\public\\projects\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\projects\\index.php",
+            "size": 26774,
+            "extension": "php",
+            "modified": "2026-06-17 16:22:00"
+        },
+        "\\public\\services\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\services\\index.php",
+            "size": 18758,
+            "extension": "php",
+            "modified": "2026-06-17 16:22:39"
+        },
+        "\\public\\super\\dashboard\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\super\\dashboard\\index.php",
+            "size": 2513,
+            "extension": "php",
+            "modified": "2026-06-20 09:11:00"
+        },
+        "\\public\\super\\profile\\index.php": {
+            "name": "index.php",
+            "path": "\\public\\super\\profile\\index.php",
+            "size": 5485,
+            "extension": "php",
+            "modified": "2026-06-20 09:11:24"
+        }
+    },
+    "api_endpoints": [],
+    "middleware": {
+        "\\app\\helpers\\AccountGuard.php": true,
+        "\\app\\helpers\\middleware.php": true,
+        "\\public\\api\\services\\debug.php": true,
+        "\\saas-conversion-helper.php": true,
+        "\\structure.php": true
+    },
+    "helpers": {
+        "\\app\\helpers\\AccountGuard.php": {
+            "name": "AccountGuard.php",
+            "path": "\\app\\helpers\\AccountGuard.php",
+            "size": 2084,
+            "extension": "php",
+            "modified": "2026-06-20 08:31:18"
+        },
+        "\\app\\helpers\\Billing.php": {
+            "name": "Billing.php",
+            "path": "\\app\\helpers\\Billing.php",
+            "size": 1408,
+            "extension": "php",
+            "modified": "2026-06-20 08:31:02"
+        },
+        "\\app\\helpers\\Branding.php": {
+            "name": "Branding.php",
+            "path": "\\app\\helpers\\Branding.php",
+            "size": 923,
+            "extension": "php",
+            "modified": "2026-06-20 08:31:35"
+        },
+        "\\app\\helpers\\Capabilities.php": {
+            "name": "Capabilities.php",
+            "path": "\\app\\helpers\\Capabilities.php",
+            "size": 2835,
+            "extension": "php",
+            "modified": "2026-06-20 05:07:54"
+        },
+        "\\app\\helpers\\Database.php": {
+            "name": "Database.php",
+            "path": "\\app\\helpers\\Database.php",
+            "size": 1247,
+            "extension": "php",
+            "modified": "2026-06-20 05:08:15"
+        },
+        "\\app\\helpers\\PageGuard.php": {
+            "name": "PageGuard.php",
+            "path": "\\app\\helpers\\PageGuard.php",
+            "size": 2007,
+            "extension": "php",
+            "modified": "2026-06-20 09:14:48"
+        },
+        "\\app\\helpers\\TenantContext.php": {
+            "name": "TenantContext.php",
+            "path": "\\app\\helpers\\TenantContext.php",
+            "size": 2799,
+            "extension": "php",
+            "modified": "2026-06-20 05:07:32"
+        },
+        "\\app\\helpers\\currency.php": {
+            "name": "currency.php",
+            "path": "\\app\\helpers\\currency.php",
+            "size": 650,
+            "extension": "php",
+            "modified": "2026-06-14 08:35:56"
+        },
+        "\\app\\helpers\\functions.php": {
+            "name": "functions.php",
+            "path": "\\app\\helpers\\functions.php",
+            "size": 606,
+            "extension": "php",
+            "modified": "2026-06-17 16:00:11"
+        },
+        "\\app\\helpers\\middleware.php": {
+            "name": "middleware.php",
+            "path": "\\app\\helpers\\middleware.php",
+            "size": 2974,
+            "extension": "php",
+            "modified": "2026-06-17 16:00:29"
+        },
+        "\\app\\helpers\\uploads.php": {
+            "name": "uploads.php",
+            "path": "\\app\\helpers\\uploads.php",
+            "size": 6072,
+            "extension": "php",
+            "modified": "2026-06-17 16:00:40"
+        },
+        "\\saas-conversion-helper.php": {
+            "name": "saas-conversion-helper.php",
+            "path": "\\saas-conversion-helper.php",
+            "size": 20563,
+            "extension": "php",
+            "modified": "2026-06-19 18:52:44"
+        }
+    },
+    "traits": {
+        "\\public\\components\\public\\navbar.php": true,
+        "\\public\\templates\\admin\\layout.php": true,
+        "\\structure.php": true
+    },
+    "interfaces": {
+        "\\structure.php": true
+    },
+    "abstract_classes": {
+        "\\app\\models\\Model.php": true,
+        "\\structure.php": true
+    },
+    "file_counts": {
+        "php": 163,
+        "json": 1,
+        "css": 3,
+        "js": 1
+    },
+    "total_size": 1020433,
+    "total_files": 168,
+    "total_dirs": 79
+}
