@@ -59,6 +59,15 @@ $isOn = function (string $needle) use ($uri): string {
         </a>
         <?php endif; ?>
 
+        <?php if (TenantContext::can(Capabilities::INVENTORY_EDIT)): ?>
+        <a class="t-link <?php echo $isOn('/super/categories'); ?><?php echo $isOn('/super/subcategories'); ?>" href="/Modern/public/super/categories/">
+            <i class="fas fa-tags"></i><span>Categories</span>
+        </a>
+        <a class="t-link <?php echo $isOn('/super/products'); ?>" href="/Modern/public/super/products/">
+            <i class="fas fa-box"></i><span>Products</span>
+        </a>
+        <?php endif; ?>
+
         <?php if (TenantContext::can(Capabilities::REPORTS_VIEW)): ?>
         <a class="t-link" href="#" data-soon><i class="fas fa-chart-line"></i><span>Reports</span><em class="t-soon">Soon</em></a>
         <?php endif; ?>
