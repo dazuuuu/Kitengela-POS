@@ -35,8 +35,14 @@ $isOn = function (string $needle) use ($uri): string {
             <i class="fas fa-gauge-high"></i><span>Dashboard</span>
         </a>
 
-        <?php if (TenantContext::can(Capabilities::SALES_RECORD) || TenantContext::can(Capabilities::SALES_VIEW)): ?>
-        <a class="t-link" href="#" data-soon><i class="fas fa-receipt"></i><span>Sales</span><em class="t-soon">Soon</em></a>
+        <?php if (TenantContext::can(Capabilities::SALES_RECORD)): ?>
+        <a class="t-link <?php echo $isOn('/sales/new'); ?>" href="/Modern/public/staff/sales/new.php"><i class="fas fa-cash-register"></i><span>Make a sale</span></a>
+        <?php endif; ?>
+        <?php if (TenantContext::role() === 'staff' && TenantContext::can(Capabilities::SALES_VIEW)): ?>
+        <a class="t-link <?php echo $isOn('/staff/sales/'); ?>" href="/Modern/public/staff/sales/"><i class="fas fa-receipt"></i><span>My sales</span></a>
+        <?php endif; ?>
+        <?php if (TenantContext::role() === 'tenant_owner'): ?>
+        <a class="t-link <?php echo $isOn('/super/sales'); ?>" href="/Modern/public/super/sales/"><i class="fas fa-receipt"></i><span>Sales</span></a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::INVENTORY_VIEW)): ?>

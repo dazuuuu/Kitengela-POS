@@ -79,18 +79,7 @@ ob_start();
 <div class="auth-sub">We emailed a 6-digit code to <strong><?php echo htmlspecialchars($maskedEmail); ?></strong>.</div>
 <?php if ($error): ?><div class="auth-alert err"><?php echo htmlspecialchars($error); ?></div><?php endif; ?>
 <?php if ($notice): ?><div class="auth-alert ok"><?php echo htmlspecialchars($notice); ?></div><?php endif; ?>
-<?php if (!empty($_SESSION['dev_otp'])): ?>
-<div class="auth-alert ok" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">
-    <strong>Dev mode:</strong> SMTP is off, so your code is
-    <strong style="letter-spacing:2px"><?php echo htmlspecialchars($_SESSION['dev_otp']); ?></strong>.
-    Disable <code>otp_debug</code> before going live.
-    <?php if (!empty($_SESSION['dev_mail_error'])): ?>
-      <div style="margin-top:8px;color:#991b1b;font-size:.85rem">
-        <strong>Why email failed:</strong> <?php echo htmlspecialchars($_SESSION['dev_mail_error']); ?>
-      </div>
-    <?php endif; ?>
-</div>
-<?php endif; ?>
+
 <form method="post" novalidate>
     <div class="mb-4">
         <input name="code" class="form-control otp-input" maxlength="6" inputmode="numeric"

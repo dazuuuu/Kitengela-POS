@@ -32,6 +32,20 @@ class PageGuard
         }
     }
 
+    /** Require a fully-authenticated user (owner or staff) who holds a capability. */
+    public static function capability(string $cap): void
+    {
+        self::requireFullAuth();
+        self::requireActiveSubscription();
+        if (!TenantContext::can($cap)) {
+            self::deny();
+        }
+        if (TenantContext::role() === 'staff' && !empty($_SESSION['must_reset'])) {
+            header('Location: ' . self::STAFF_RESET_URL);
+            exit;
+        }
+    }
+
     private static function requireFullAuth(): void
     {
         $authed = !empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified']) && TenantContext::check();

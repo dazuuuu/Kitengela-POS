@@ -76,6 +76,36 @@ class ProductModel extends Model
         return $stmt->fetchAll();
     }
 
+    /** Active, in-stock products for the till (selling price only — no cost). */
+    public function sellable(): array
+    {
+        $tid = \TenantContext::tenantId();
+        $stmt = $this->db->prepare(
+            "SELECT id, name, selling_price, quantity, unit, image_path
+               FROM products
+              WHERE tenant_id = ? AND status = 'active' AND quantity > 0
+           ORDER BY name ASC"
+        );
+        $stmt->execute([$tid]);
+        return $stmt->fetchAll();
+    }
+
+    /** All active products with category names — for the public catalogue. No cost data exposed. */
+    public function catalogueForTenant(int $tenantId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT p.id, p.name, p.selling_price, p.image_path, p.description, p.unit,
+                    c.name AS category_name, s.name AS subcategory_name
+               FROM products p
+          LEFT JOIN categories c  ON c.id = p.category_id
+          LEFT JOIN subcategories s ON s.id = p.subcategory_id
+              WHERE p.tenant_id = ? AND p.status = 'active'
+           ORDER BY p.name ASC"
+        );
+        $stmt->execute([$tenantId]);
+        return $stmt->fetchAll();
+    }
+
     /** Products with category + subcategory names for listing. */
     public function listWithMeta(): array
     {

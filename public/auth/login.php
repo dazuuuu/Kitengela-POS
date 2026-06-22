@@ -111,7 +111,10 @@ ob_start();
     </div>
     <button class="btn-auth">Continue</button>
 </form>
-<div class="auth-foot">No account yet? <a href="/Modern/public/auth/register.php">Create one</a></div>
+<div class="auth-foot">
+    No account yet? <a href="/Modern/public/auth/register.php">Create one</a><br>
+    <a href="/Modern/public/auth/forgot-password.php">Forgot password?</a>
+</div>
 <?php
 $content = ob_get_clean();
 include ROOT_PATH . '/public/templates/auth/layout.php';
