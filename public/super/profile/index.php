@@ -1,7 +1,7 @@
 <?php
 // public/super/profile/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::auth();
 
 $pdo = Database::pdo();
 $tenantId = TenantContext::tenantId();
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['flash']['success'] = 'Business profile updated.';
         }
     }
-    header('Location: /Modern/public/super/profile/');
+    header('Location: /Kitale/public/super/profile/');
     exit;
 }
 

@@ -3,12 +3,13 @@
 // Holds the current request's identity: which tenant, which user, which
 // capabilities. Populated once at login (into the session) and rehydrated from
 // the session on every request via boot().
+// Subscription-gating has been removed for single-tenant POS use.
 
 class TenantContext
 {
     private static bool $booted   = false;
     private static ?int $userId   = null;
-    private static ?int $tenantId = null;   // NULL = platform-level (super admin)
+    private static ?int $tenantId = null;
     private static ?string $role  = null;
     private static array $caps    = [];
 
@@ -38,10 +39,10 @@ class TenantContext
         self::boot();
     }
 
-    public static function check(): bool   { self::ensure(); return self::$userId !== null; }
-    public static function userId(): ?int  { self::ensure(); return self::$userId; }
-    public static function tenantId(): ?int{ self::ensure(); return self::$tenantId; }
-    public static function role(): ?string { self::ensure(); return self::$role; }
+    public static function check(): bool    { self::ensure(); return self::$userId !== null; }
+    public static function userId(): ?int   { self::ensure(); return self::$userId; }
+    public static function tenantId(): ?int { self::ensure(); return self::$tenantId; }
+    public static function role(): ?string  { self::ensure(); return self::$role; }
 
     public static function isPlatformAdmin(): bool
     {
@@ -67,9 +68,9 @@ class TenantContext
     /** Test/maintenance helper — reset between requests in a long-running process. */
     public static function reset(): void
     {
-        self::$booted = false;
-        self::$userId = self::$tenantId = null;
-        self::$role = null;
-        self::$caps = [];
+        self::$booted   = false;
+        self::$userId   = self::$tenantId = null;
+        self::$role     = null;
+        self::$caps     = [];
     }
 }

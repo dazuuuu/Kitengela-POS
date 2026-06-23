@@ -1,0 +1,17 @@
+{
+  "name": "Kitale POS",
+  "short_name": "Kitale POS",
+  "description": "Point of sale — record sales, track stock, print receipts.",
+  "id": "/Kitale/public/",
+  "start_url": "/Kitale/public/",
+  "scope": "/Kitale/public/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/Kitale/public/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/Kitale/public/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/Kitale/public/assets/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

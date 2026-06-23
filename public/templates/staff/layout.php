@@ -33,7 +33,7 @@ $shopName = $__tenant['name'] ?? 'My Shop';
 </head>
 <body>
 <div class="t-wrap">
-    <?php include __DIR__ . '/../../components/tenants/sidebar.php'; ?>
+    <?php include __DIR__ . '/../../components/staff/sidebar.php'; ?>
     <main class="t-main">
         <div class="t-topbar">
             <h1><?php echo htmlspecialchars($page_title ?? 'Dashboard'); ?></h1>

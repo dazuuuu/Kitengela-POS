@@ -11,7 +11,7 @@ $body = json_decode($raw, true);
 if (is_array($body)) {
     // Login link for the email — set app url in app/config/app.php (['url' => 'https://yourdomain']).
     $appCfg   = is_file(ROOT_PATH . '/app/config/app.php') ? require ROOT_PATH . '/app/config/app.php' : [];
-    $appUrl   = rtrim($appCfg['url'] ?? 'http://localhost/Modern', '/');
+    $appUrl   = rtrim($appCfg['url'] ?? 'http://localhost/Kitale', '/');
     $loginUrl = $appUrl . '/public/auth/login.php';
 
     $mailer = new MailService();

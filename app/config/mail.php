@@ -8,11 +8,11 @@ return [
     'port'       => 587,
     'encryption' => 'tls',                     // 'tls' for port 587, 'ssl' for 465
 
-    'username'   => 'njugunavickie7@gmail.com',
-    'password'   => 'ayyi uupe phww lval',     // Gmail App Password — regenerate after testing
+    'username'   => 'vickiekaran254@gmail.com',
+    'password'   => 'main ngmz sanw ijak',     // Gmail App Password — regenerate after testing
 
     // Gmail blocks/rewrites a From it can't verify, so the From matches the login:
-    'from_email' => 'njugunavickie7@gmail.com',
+    'from_email' => 'vickiekaran254@gmail.com',
     'from_name'  => 'Modern POS',
 
     // Local Windows/AMPPS often can't verify Gmail's TLS certificate. This is the

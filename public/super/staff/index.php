@@ -1,7 +1,7 @@
 <?php
 // public/super/staff/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::auth();
 require_once ROOT_PATH . '/app/services/emails/staff_invite_email.php';
 
 $pdo = Database::pdo();
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     ];
 
     $appCfg  = is_file(ROOT_PATH . '/app/config/app.php') ? require ROOT_PATH . '/app/config/app.php' : [];
-    $loginUrl = rtrim($appCfg['url'] ?? 'http://localhost/Modern', '/') . '/public/auth/login.php';
+    $loginUrl = rtrim($appCfg['url'] ?? 'http://localhost/Kitale', '/') . '/public/auth/login.php';
 
     $notify = function (array $info) use ($loginUrl) {
         $msg = build_staff_invite_email($info['name'], $info['temp_password'], $loginUrl, $info['shop']);
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
     if ($res['ok']) {
         $_SESSION['flash']['success'] = 'Staff account created — an invite with a temporary password was emailed to ' . $old['email'] . '.';
-        header('Location: /Modern/public/super/staff/');
+        header('Location: /Kitale/public/super/staff/');
         exit;
     }
     $errors = $res['errors'];
@@ -50,7 +50,7 @@ ob_start();
       <i class="fas fa-code-branch text-muted mb-2" style="font-size:1.6rem;"></i>
       <h2 class="h5">Create a branch first</h2>
       <p class="text-muted">Staff are assigned to a branch, so you'll need at least one branch before adding staff.</p>
-      <a class="btn btn-primary" href="/Modern/public/super/branches/">Go to Branches</a>
+      <a class="btn btn-primary" href="/Kitale/public/super/branches/">Go to Branches</a>
     </div>
   </div>
 <?php else: ?>

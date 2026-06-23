@@ -31,7 +31,10 @@ class MailService
     }
 
     /** @return bool true on send, false on failure (never throws to the page). */
-    public function send(string $to, string $subject, string $html, string $altBody = ''): bool
+    /**
+     * @param array $attachments each: ['data' => binary string, 'name' => 'file.pdf', 'type' => 'application/pdf']
+     */
+    public function send(string $to, string $subject, string $html, string $altBody = '', array $attachments = []): bool
     {
         self::$lastError = '';
         if (!class_exists(PHPMailer::class)) {
@@ -75,6 +78,11 @@ class MailService
             $mail->Subject = $subject;
             $mail->Body    = $html;
             $mail->AltBody = $altBody !== '' ? $altBody : strip_tags($html);
+            foreach ($attachments as $att) {
+                if (!empty($att['data']) && !empty($att['name'])) {
+                    $mail->addStringAttachment($att['data'], $att['name'], 'base64', $att['type'] ?? 'application/octet-stream');
+                }
+            }
             $mail->send();
             return true;
         } catch (\Throwable $e) {

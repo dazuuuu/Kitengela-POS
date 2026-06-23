@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 // Check if logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /Modern/public/auth/login.php');
+    header('Location: /Kitale/public/auth/login.php');
     exit();
 }
 
@@ -12,7 +12,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 
 // Cart link target — change this if your cart page lives elsewhere.
-$cartUrl = '/Modern/public/store/cart.php';
+$cartUrl = '/Kitale/public/store/cart.php';
 $isCart = strpos($_SERVER['REQUEST_URI'], '/store/cart') !== false;
 ?>
 <!DOCTYPE html>

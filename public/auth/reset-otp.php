@@ -7,7 +7,7 @@ require_once ROOT_PATH . '/app/services/emails/password_reset_email.php';
 
 // Guard: must have a reset in progress
 if (empty($_SESSION['reset_user_id'])) {
-    header('Location: /Modern/public/auth/forgot-password.php');
+    header('Location: /Kitale/public/auth/forgot-password.php');
     exit;
 }
 
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['reset_tenant_id'], $_SESSION['reset_shop']
             );
 
-            header('Location: /Modern/public/auth/login.php?reset=1');
+            header('Location: /Kitale/public/auth/login.php?reset=1');
             exit;
         }
         $error = OtpService::message($res['reason']);
@@ -97,8 +97,8 @@ ob_start();
     <button class="btn-auth">Set new password</button>
 </form>
 <div class="auth-foot">
-    Didn't get it? <a href="/Modern/public/auth/reset-otp.php?resend=1">Resend code</a><br>
-    <a href="/Modern/public/auth/forgot-password.php">Try a different email</a>
+    Didn't get it? <a href="/Kitale/public/auth/reset-otp.php?resend=1">Resend code</a><br>
+    <a href="/Kitale/public/auth/forgot-password.php">Try a different email</a>
 </div>
 <?php
 $content = ob_get_clean();

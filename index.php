@@ -1,3 +1,3 @@
 <?php
-header("Location: /Modern/public/");
+header("Location: /Kitale/public/");
 exit();

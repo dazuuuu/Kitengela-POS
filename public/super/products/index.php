@@ -1,7 +1,7 @@
 <?php
 // public/super/products/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::capability(Capabilities::INVENTORY_EDIT);
 
 $pdo = Database::pdo();
 $C = new Models\CategoryModel($pdo);
@@ -317,4 +317,5 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
 </script>
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../../templates/tenants/layout.php';
+$__layout = TenantContext::role() === 'staff' ? 'staff' : 'tenants';
+include __DIR__ . '/../../templates/' . $__layout . '/layout.php';

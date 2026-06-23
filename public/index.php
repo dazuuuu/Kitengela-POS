@@ -1,385 +1,252 @@
 <?php
-// public/index.php — Modern POS · landing page
-// A minimal, phone-first landing page for the SaaS POS. No e-commerce, no
-// engineering-services content. Drives visitors to registration.
-
-$page_title       = 'Modern POS — run your shop from your phone';
-$page_description = 'A modern point-of-sale that lives on your phone. Record sales, track stock, send receipts and manage your team — no hardware, no installs.';
-$use_home_navbar  = true;
-
+// public/index.php — Kitale POS · login portal (installable PWA)
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-$REGISTER = '/Modern/public/auth/register.php';
-$LOGIN    = '/Modern/public/auth/login.php';
-
-/* Pricing pulled live from subscription_plans when available; falls back to the
-   seeded plans so the page never depends on the database being up. */
-$plans = [];
-try {
-    $appBoot = __DIR__ . '/../app/app.php';
-    if (is_file($appBoot)) {
-        require_once $appBoot;
-        $plans = Database::pdo()
-            ->query("SELECT * FROM subscription_plans WHERE is_active = 1 AND is_public = 1 ORDER BY id")
-            ->fetchAll();
-    }
-} catch (Throwable $e) {
-    $plans = [];
-}
-if (!$plans) {
-    $plans = [
-        ['name' => 'Standard', 'description' => 'Everything you need to run your shop',
-         'price_weekly' => 250, 'price_biweekly' => 500, 'price_monthly' => 1000,
-         'max_staff' => 3, 'max_products' => 200],
-    ];
-}
-
-$features = [
-    ['icon' => 'fa-bolt',            'title' => 'Record sales in seconds', 'desc' => 'Ring up a sale, pick the items, done. Your stock updates itself.'],
-    ['icon' => 'fa-boxes-stacked',   'title' => 'Know your stock',         'desc' => 'See what\'s running low before it runs out, with reorder alerts.'],
-    ['icon' => 'fa-receipt',         'title' => 'Receipts, instantly',     'desc' => 'Print or email a receipt the moment a sale is finished.'],
-    ['icon' => 'fa-user-group',      'title' => 'Keep customers close',    'desc' => 'Save customer details and tell them the moment you restock.'],
-    ['icon' => 'fa-user-shield',     'title' => 'Your team, your rules',   'desc' => 'Add staff and choose exactly what each person is allowed to do.'],
-    ['icon' => 'fa-chart-line',      'title' => 'See how you\'re doing',   'desc' => 'Daily sales and stock reports, always in your pocket.'],
-];
-
-$steps = [
-    ['n' => '1', 'title' => 'Create your shop',      'desc' => 'Register and choose a plan that fits how you sell.'],
-    ['n' => '2', 'title' => 'Verify it\'s you',       'desc' => 'Confirm with the code we email you — your account stays secure.'],
-    ['n' => '3', 'title' => 'Set up &amp; start selling', 'desc' => 'Add your logo and products, then record your first sale.'],
-];
-
-function lp_money($v): string { return $v === null ? '—' : 'KES ' . number_format((float)$v); }
-
-ob_start();
+$LOGIN    = '/Kitale/public/auth/login.php';
+$loggedIn = !empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified']);
+$role     = $_SESSION['role'] ?? '';
+$dashUrl  = $role === 'staff' ? '/Kitale/public/staff/dashboard/' : '/Kitale/public/super/dashboard/';
+$h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
 ?>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kitale POS — Sign in</title>
+<meta name="description" content="Kitale POS — record sales, track stock, print receipts.">
+<?php include __DIR__ . '/components/pwa_head.php'; ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-/* ============================================================
-   Modern POS landing — scoped (.lp-*). Harmonised with theme.css
-   teal/emerald tokens so the kept navbar/footer don't clash.
-   ============================================================ */
-.lp{ --ink:#0a1413; --teal:var(--brand-primary,#0D9488); --mint:var(--brand-secondary,#2DD4BF);
-     --amber:var(--brand-accent,#E8902C); --line:#e2eae8; --muted:#64748b;
-     color:var(--ink); overflow-x:clip; }
-.lp .lp-wrap{ max-width:1180px; margin:0 auto; padding:0 22px; }
-.lp section{ position:relative; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+        min-height:100svh; color:#e2e8f0; display:flex; flex-direction:column;
+        align-items:center; justify-content:center;
+        padding:24px; padding-top:max(24px,env(safe-area-inset-top)); padding-bottom:max(24px,env(safe-area-inset-bottom));
+        background:radial-gradient(ellipse at 30% 20%,#0d1b3e,#0a0f1e 60%,#000510);
+        perspective:1200px; overflow-x:hidden; }
 
-/* ---------- HERO ---------- */
-.lp-hero{ position:relative; color:#fff; overflow:hidden;
-  background:radial-gradient(120% 120% at 80% 0%, #0c5a52 0%, #06342f 45%, #041f1c 100%);
-  padding:calc(var(--navbar-height,90px) + 64px) 0 90px; }
-.lp-hero::before{ content:''; position:absolute; inset:0; opacity:.5; pointer-events:none;
-  background:
-    radial-gradient(40% 40% at 12% 18%, rgba(45,212,191,.22), transparent 60%),
-    radial-gradient(36% 36% at 88% 72%, rgba(232,144,44,.16), transparent 60%); }
-.lp-hero-grid{ position:relative; display:grid; grid-template-columns:1.05fr .95fr; gap:54px; align-items:center; }
-.lp-eyebrow{ display:inline-flex; align-items:center; gap:9px; padding:7px 15px; border-radius:999px;
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
-  font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--mint); }
-.lp-eyebrow .pulse{ width:8px; height:8px; border-radius:50%; background:var(--mint); box-shadow:0 0 0 0 rgba(45,212,191,.6); animation:lpPulse 2.2s infinite; }
-@keyframes lpPulse{ 0%{box-shadow:0 0 0 0 rgba(45,212,191,.55);} 70%{box-shadow:0 0 0 9px rgba(45,212,191,0);} 100%{box-shadow:0 0 0 0 rgba(45,212,191,0);} }
-.lp-hero h1{ font-family:var(--font-display,'Montserrat',sans-serif); font-weight:900;
-  font-size:clamp(2.5rem,5.4vw,4.1rem); line-height:1.03; letter-spacing:-.01em; margin:18px 0 16px; }
-.lp-hero h1 .hl{ color:var(--mint); }
-.lp-hero p.lead{ color:rgba(255,255,255,.82); font-size:1.08rem; max-width:480px; margin-bottom:28px; }
-.lp-cta{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
-.lp-btn{ display:inline-flex; align-items:center; gap:10px; padding:14px 24px; border-radius:12px;
-  font-weight:700; font-size:.96rem; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
-.lp-btn-primary{ background:var(--mint); color:#04201d; box-shadow:0 12px 30px rgba(45,212,191,.32); }
-.lp-btn-primary:hover{ transform:translateY(-2px); box-shadow:0 18px 40px rgba(45,212,191,.42); color:#04201d; }
-.lp-btn-ghost{ color:#fff; border:1px solid rgba(255,255,255,.28); }
-.lp-btn-ghost:hover{ background:rgba(255,255,255,.1); color:#fff; transform:translateY(-2px); }
-.lp-trust{ display:flex; flex-wrap:wrap; gap:18px; margin-top:24px; color:rgba(255,255,255,.7); font-size:.82rem; }
-.lp-trust span{ display:inline-flex; align-items:center; gap:7px; }
-.lp-trust i{ color:var(--mint); }
+  /* Stars */
+  .stars{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .star{ position:absolute; border-radius:50%; background:#fff; animation:twinkle var(--d,3s) infinite alternate; }
+  @keyframes twinkle{ 0%{ opacity:.1; transform:scale(.8); } 100%{ opacity:.9; transform:scale(1.2); } }
 
-/* ---------- SIGNATURE: 3D phone ---------- */
-.lp-stage{ perspective:1100px; display:flex; justify-content:center; }
-.lp-phone-scene{ position:relative; transform-style:preserve-3d; transition:transform .25s cubic-bezier(.2,.7,.2,1); will-change:transform; }
-.lp-phone{ position:relative; width:288px; height:592px; border-radius:42px; transform-style:preserve-3d;
-  background:linear-gradient(160deg,#1b2a28,#0a1413); padding:13px;
-  box-shadow:0 50px 90px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.18), 0 0 0 2px rgba(255,255,255,.05);
-  animation:lpFloat 7s ease-in-out infinite; }
-@keyframes lpFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-14px); } }
-.lp-screen{ position:relative; height:100%; border-radius:30px; overflow:hidden; background:#f1f6f5; display:flex; flex-direction:column; }
-.lp-notch{ position:absolute; top:10px; left:50%; transform:translateX(-50%); width:120px; height:24px; background:#0a1413; border-radius:0 0 16px 16px; z-index:5; }
-.lp-sbar{ display:flex; justify-content:space-between; align-items:center; padding:12px 18px 6px; font-size:.66rem; font-weight:700; color:#0a1413; }
-.lp-sbar i{ margin-left:5px; }
-.lp-appbar{ display:flex; align-items:center; gap:10px; padding:8px 16px 12px; }
-.lp-appbar .lp-av{ width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--teal),var(--mint)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:.8rem; }
-.lp-appbar b{ font-size:.92rem; } .lp-appbar small{ display:block; color:#64748b; font-size:.62rem; }
-.lp-sale{ margin:4px 14px; background:#fff; border:1px solid #e6efed; border-radius:16px; padding:14px; box-shadow:0 8px 20px rgba(6,52,47,.06); }
-.lp-sale h5{ font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:#94a3b8; margin:0 0 10px; font-weight:800; }
-.lp-row{ display:flex; justify-content:space-between; align-items:center; font-size:.8rem; padding:7px 0; border-bottom:1px dashed #eef3f2; }
-.lp-row:last-of-type{ border-bottom:0; }
-.lp-row .q{ color:#64748b; font-size:.72rem; }
-.lp-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:10px; padding-top:10px; border-top:2px solid #0a1413; }
-.lp-total b{ font-size:1.15rem; } .lp-total span{ font-size:.66rem; color:#64748b; text-transform:uppercase; letter-spacing:.1em; }
-.lp-record{ margin:14px; padding:13px; border-radius:13px; text-align:center; font-weight:800; font-size:.85rem; color:#04201d;
-  background:linear-gradient(135deg,var(--teal),var(--mint)); box-shadow:0 10px 22px rgba(13,148,136,.3); }
-.lp-toast{ margin:0 14px 14px; display:flex; align-items:center; gap:9px; background:#e8f9f3; color:#0a766b; border-radius:11px; padding:10px 12px; font-size:.74rem; font-weight:700; }
+  /* Grid floor */
+  .grid-plane{ position:fixed; bottom:-80px; left:50%; transform:translateX(-50%) rotateX(75deg);
+               width:900px; height:600px; z-index:0; pointer-events:none;
+               background:linear-gradient(rgba(15,118,110,.2) 1px,transparent 1px),
+                           linear-gradient(90deg,rgba(15,118,110,.2) 1px,transparent 1px);
+               background-size:40px 40px; }
 
-/* floating depth chips */
-.lp-chip{ position:absolute; display:flex; align-items:center; gap:9px; padding:11px 14px; border-radius:14px;
-  background:rgba(255,255,255,.96); color:#0a1413; font-size:.76rem; font-weight:700;
-  box-shadow:0 18px 40px rgba(0,0,0,.28); }
-.lp-chip i{ width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:.7rem; }
-.lp-chip small{ display:block; font-weight:500; color:#64748b; font-size:.66rem; }
-.lp-chip-1{ top:64px; left:-46px; transform:translateZ(60px); animation:lpFloat 6s ease-in-out infinite; }
-.lp-chip-2{ top:248px; right:-58px; transform:translateZ(90px); animation:lpFloat 7.5s ease-in-out .4s infinite; }
-.lp-chip-3{ bottom:70px; left:-40px; transform:translateZ(40px); animation:lpFloat 6.8s ease-in-out .8s infinite; }
+  /* Ambient orbs */
+  .orb{ position:fixed; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0;
+        animation:drift var(--dt,8s) ease-in-out infinite alternate; }
+  @keyframes drift{ 0%{ transform:translate(0,0); } 100%{ transform:translate(var(--tx,20px),var(--ty,-20px)); } }
 
-/* ---------- SECTION SHELL ---------- */
-.lp-sec{ padding:84px 0; }
-.lp-head{ max-width:620px; margin:0 auto 48px; text-align:center; }
-.lp-head .lp-kicker{ font-size:.72rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--teal); }
-.lp-head h2{ font-family:var(--font-display,'Montserrat',sans-serif); font-weight:800; font-size:clamp(1.8rem,3.6vw,2.6rem); margin:12px 0 10px; letter-spacing:-.01em; }
-.lp-head p{ color:var(--muted); font-size:1.02rem; }
+  /* Floating chips */
+  .floating-chip{ position:fixed; background:rgba(13,20,40,.9); border:1px solid rgba(255,255,255,.12);
+                  border-radius:12px; padding:8px 14px; display:flex; align-items:center; gap:8px;
+                  backdrop-filter:blur(20px); pointer-events:none; z-index:1;
+                  animation:chipfloat var(--cf,5s) ease-in-out infinite alternate; }
+  @keyframes chipfloat{ 0%{ transform:translateY(0) rotate(var(--cr,-2deg)); }
+                        100%{ transform:translateY(-10px) rotate(var(--cr2,2deg)); } }
+  .chip-icon{ width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .chip-label{ font-size:.68rem; font-weight:600; color:#94a3b8; line-height:1.3; }
+  .chip-val{ color:#e2e8f0; font-size:.76rem; font-weight:700; }
 
-/* ---------- FEATURES ---------- */
-.lp-feat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-.lp-card{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
-  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; will-change:transform; }
-.lp-card:hover{ transform:translateY(-7px); box-shadow:0 26px 50px rgba(6,52,47,.12); border-color:transparent; }
-.lp-card .lp-ic{ width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center;
-  background:rgba(13,148,136,.1); color:var(--teal); font-size:1.05rem; margin-bottom:16px; }
-.lp-card h3{ font-size:1.06rem; font-weight:800; margin:0 0 7px; }
-.lp-card p{ color:var(--muted); font-size:.92rem; margin:0; line-height:1.6; }
+  /* 3-D stage */
+  .stage{ transform-style:preserve-3d; animation:bob 6s ease-in-out infinite; z-index:2; position:relative; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0) rotateX(0) rotateY(0); }
+                  33%{ transform:translateY(-8px) rotateX(2deg) rotateY(-1deg); }
+                  66%{ transform:translateY(-4px) rotateX(-1deg) rotateY(2deg); } }
+  .wrap{ width:440px; max-width:100%; transform-style:preserve-3d; position:relative; transition:transform .1s ease; }
 
-/* ---------- HOW IT WORKS (real sequence -> numbered) ---------- */
-.lp-steps{ background:var(--color-surface-alt,#f1f6f5); }
-.lp-steps-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; counter-reset:step; }
-.lp-step{ position:relative; background:#fff; border:1px solid var(--line); border-radius:18px; padding:30px 26px; }
-.lp-step .num{ font-family:var(--font-display,'Montserrat',sans-serif); font-weight:900; font-size:2.4rem;
-  line-height:1; color:transparent; -webkit-text-stroke:2px var(--mint); margin-bottom:12px; }
-.lp-step h3{ font-size:1.08rem; font-weight:800; margin:0 0 7px; }
-.lp-step p{ color:var(--muted); font-size:.92rem; margin:0; line-height:1.6; }
+  /* Card layers */
+  .card-shadow{ position:absolute; inset:0; transform:translateZ(-60px) translateY(60px) scale(.88);
+                background:rgba(15,118,110,.3); filter:blur(40px); border-radius:24px; pointer-events:none; }
+  .card-glow{ position:absolute; inset:-2px;
+              background:linear-gradient(135deg,rgba(15,118,110,.5),rgba(45,212,191,.4),rgba(37,99,235,.3));
+              border-radius:26px; transform:translateZ(-4px); filter:blur(1px); }
+  .card-mid{ position:absolute; inset:-1px; background:rgba(255,255,255,.06); border-radius:25px;
+             transform:translateZ(-2px); border:1px solid rgba(255,255,255,.12); }
+  .card{ background:rgba(13,20,40,.92); border:1px solid rgba(255,255,255,.1); border-radius:24px;
+         overflow:hidden; backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px); position:relative; }
+  .card::before{ content:''; position:absolute; inset:0;
+                 background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 50%,rgba(45,212,191,.04) 100%);
+                 pointer-events:none; z-index:1; }
+  .sheen{ position:absolute; inset:0;
+          background:radial-gradient(circle at 50% 20%,rgba(255,255,255,.06) 0%,transparent 60%);
+          pointer-events:none; z-index:3; transition:background .05s; }
+  .inner{ position:relative; z-index:2; padding:32px; }
 
-/* ---------- PRICING ---------- */
-.lp-toggle{ display:inline-flex; background:#eef3f2; border-radius:999px; padding:5px; gap:4px; margin:0 auto 36px; }
-.lp-toggle button{ border:0; background:transparent; padding:9px 18px; border-radius:999px; font-weight:700; font-size:.84rem; color:#64748b; cursor:pointer; transition:all .2s ease; }
-.lp-toggle button.on{ background:#fff; color:var(--ink); box-shadow:0 4px 12px rgba(6,52,47,.1); }
-.lp-price-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,360px)); gap:22px; justify-content:center; }
-.lp-price-3{ grid-template-columns:repeat(3,minmax(0,300px)); }
-.lp-plan{ position:relative; background:#fff; border:1px solid var(--line); border-radius:22px; padding:32px 30px; display:flex; flex-direction:column; }
-.lp-plan.featured{ border-color:var(--teal); box-shadow:0 24px 60px rgba(13,148,136,.16); }
-.lp-plan .tag{ position:absolute; top:-12px; right:24px; background:var(--amber); color:#fff; font-size:.64rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:5px 12px; border-radius:999px; }
-.lp-plan h3{ font-size:1.2rem; font-weight:800; margin:0 0 4px; }
-.lp-plan .sub{ color:var(--muted); font-size:.86rem; margin-bottom:18px; }
-.lp-plan .price{ font-family:var(--font-display,'Montserrat',sans-serif); font-weight:900; font-size:2.1rem; line-height:1; }
-.lp-plan .price small{ font-size:.8rem; font-weight:600; color:var(--muted); }
-.lp-plan ul{ list-style:none; padding:0; margin:20px 0 24px; display:flex; flex-direction:column; gap:11px; }
-.lp-plan li{ display:flex; align-items:center; gap:10px; font-size:.9rem; color:#44524f; }
-.lp-plan li i{ color:var(--teal); font-size:.78rem; }
-.lp-plan .lp-btn{ justify-content:center; margin-top:auto; }
-.lp-plan .lp-btn-dark{ background:var(--ink); color:#fff; }
-.lp-plan .lp-btn-dark:hover{ background:#06342f; color:#fff; transform:translateY(-2px); }
+  /* Brand */
+  .brand{ text-align:center; margin-bottom:24px; }
+  .logo-box{ width:72px; height:72px; border-radius:18px; margin:0 auto 14px;
+             background:linear-gradient(135deg,#0f766e,rgba(45,212,191,.1));
+             border:1px solid rgba(45,212,191,.3);
+             box-shadow:0 0 30px rgba(15,118,110,.4),inset 0 1px 0 rgba(255,255,255,.15);
+             display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .logo-box img{ width:100%; height:100%; object-fit:contain; padding:10px;
+                 filter:brightness(0) invert(1) drop-shadow(0 0 6px rgba(45,212,191,.4)); }
+  .logo-box .logo-fallback{ color:#2dd4bf; font-size:1.6rem; }
+  .brand h1{ font-size:1.4rem; font-weight:800; color:#fff; letter-spacing:-.02em; margin-bottom:4px; }
+  .brand p{ color:#64748b; font-size:.85rem; }
 
-/* ---------- FINAL CTA ---------- */
-.lp-final{ position:relative; overflow:hidden; color:#fff; text-align:center;
-  background:radial-gradient(120% 120% at 50% 0%, #0c5a52, #06342f 60%, #041f1c); padding:88px 0; }
-.lp-final h2{ font-family:var(--font-display,'Montserrat',sans-serif); font-weight:900; font-size:clamp(1.9rem,4vw,3rem); margin:0 0 14px; }
-.lp-final p{ color:rgba(255,255,255,.8); max-width:520px; margin:0 auto 28px; }
+  /* Portal items */
+  .lede{ font-size:.7rem; text-transform:uppercase; letter-spacing:.14em; color:#475569;
+         text-align:center; margin-bottom:16px; }
+  .portal{ display:flex; align-items:center; gap:14px; text-decoration:none; color:#fff;
+           background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+           border-radius:14px; padding:16px 18px; margin-bottom:10px; transition:all .2s; }
+  .portal:last-of-type{ margin-bottom:0; }
+  .portal:hover, .portal:focus-visible{
+    transform:translateY(-2px); outline:none;
+    box-shadow:0 8px 24px rgba(15,118,110,.25); }
+  .portal.owner:hover{ background:rgba(45,212,191,.08); border-color:rgba(45,212,191,.5); }
+  .portal.staff:hover{ background:rgba(96,165,250,.08); border-color:rgba(96,165,250,.5);
+                       box-shadow:0 8px 24px rgba(37,99,235,.2); }
+  .portal .ic{ width:46px; height:46px; border-radius:12px; display:flex; align-items:center;
+               justify-content:center; font-size:1.2rem; flex-shrink:0; }
+  .portal.owner .ic{ background:rgba(45,212,191,.15); color:#2dd4bf; }
+  .portal.staff .ic{ background:rgba(96,165,250,.15); color:#93c5fd; }
+  .portal .tx{ flex:1; }
+  .portal .tx b{ display:block; font-size:.98rem; font-weight:700; margin-bottom:2px; }
+  .portal .tx span{ font-size:.8rem; color:#64748b; }
+  .portal .go{ color:#334155; font-size:.9rem; transition:transform .2s; }
+  .portal:hover .go{ transform:translateX(3px); color:#94a3b8; }
 
-/* ---------- reveal ---------- */
-.lp-reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
-.lp-reveal.in{ opacity:1; transform:none; }
+  /* Install button */
+  .install-btn{ display:none; width:100%; margin-top:14px; align-items:center; justify-content:center;
+                gap:10px; background:linear-gradient(135deg,#0f766e,#2dd4bf); color:#04201d;
+                border:0; border-radius:13px; padding:14px; font-size:.95rem; font-weight:800;
+                cursor:pointer; transition:all .2s; }
+  .install-btn:hover{ transform:translateY(-1px); box-shadow:0 8px 24px rgba(15,118,110,.4); }
 
-/* ---------- RESPONSIVE ---------- */
-@media (max-width:980px){
-  .lp-hero-grid{ grid-template-columns:1fr; gap:48px; text-align:center; }
-  .lp-cta, .lp-trust{ justify-content:center; }
-  .lp-hero p.lead{ margin-left:auto; margin-right:auto; }
-  .lp-feat-grid{ grid-template-columns:repeat(2,1fr); }
-  .lp-steps-grid{ grid-template-columns:1fr; }
-  .lp-price-3{ grid-template-columns:1fr; max-width:380px; margin:0 auto; }
-}
-@media (max-width:600px){
-  .lp-feat-grid{ grid-template-columns:1fr; }
-  .lp-price-grid{ grid-template-columns:1fr; }
-  .lp-chip-1{ left:-12px; } .lp-chip-2{ right:-12px; } .lp-chip-3{ left:-8px; }
-  .lp-phone{ width:256px; height:526px; }
-  .lp-sec{ padding:60px 0; }
-}
-@media (prefers-reduced-motion: reduce){
-  .lp-phone, .lp-chip-1, .lp-chip-2, .lp-chip-3{ animation:none; }
-  .lp-reveal{ transition:none; opacity:1; transform:none; }
-  .lp-phone-scene{ transition:none; }
-}
-:focus-visible{ outline:3px solid var(--mint); outline-offset:3px; border-radius:6px; }
+  /* Misc */
+  .hint{ text-align:center; color:#475569; font-size:.76rem; margin-top:14px; line-height:1.5; }
+  .hint b{ color:#64748b; font-weight:600; }
+  .foot{ text-align:center; color:#1e293b; font-size:.72rem; margin-top:18px; }
+
+  @media(max-width:480px){
+    .floating-chip{ display:none; }
+    .inner{ padding:24px; }
+  }
 </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="grid-plane"></div>
+  <div class="orb" style="width:280px;height:280px;background:rgba(15,118,110,.22);top:0%;left:-8%;--dt:9s;--tx:25px;--ty:15px"></div>
+  <div class="orb" style="width:220px;height:220px;background:rgba(37,99,235,.15);bottom:5%;right:-6%;--dt:11s;--tx:-20px;--ty:-25px"></div>
+  <div class="orb" style="width:160px;height:160px;background:rgba(45,212,191,.1);top:55%;left:8%;--dt:7s;--tx:10px;--ty:20px"></div>
 
-<div class="lp">
+  <div class="floating-chip" style="top:12%;left:3%;--cf:6s;--cr:-3deg;--cr2:1deg">
+    <div class="chip-icon" style="background:rgba(45,212,191,.15)"><i class="fa-solid fa-cart-shopping" style="color:#2dd4bf;font-size:12px"></i></div>
+    <div><div class="chip-val">Live POS</div><div class="chip-label">Sales tracking</div></div>
+  </div>
+  <div class="floating-chip" style="bottom:18%;right:3%;--cf:7.5s;--cr:2deg;--cr2:-2deg">
+    <div class="chip-icon" style="background:rgba(16,185,129,.15)"><i class="fa-solid fa-boxes-stacked" style="color:#10b981;font-size:12px"></i></div>
+    <div><div class="chip-val">Stock</div><div class="chip-label">Managed</div></div>
+  </div>
+  <div class="floating-chip" style="top:45%;right:2%;--cf:5s;--cr:-1deg;--cr2:3deg">
+    <div class="chip-icon" style="background:rgba(96,165,250,.15)"><i class="fa-solid fa-receipt" style="color:#93c5fd;font-size:12px"></i></div>
+    <div><div class="chip-val">Receipts</div><div class="chip-label">Instant print</div></div>
+  </div>
 
-  <!-- ===== HERO ===== -->
-  <section class="lp-hero">
-    <div class="lp-wrap lp-hero-grid">
-      <div class="lp-hero-copy">
-        <span class="lp-eyebrow"><span class="pulse"></span> Point of sale, in your pocket</span>
-        <h1>Run your whole shop <span class="hl">from your phone.</span></h1>
-        <p class="lead">Record sales, track stock, send receipts and manage your team — no till, no hardware, no installs. Just your phone.</p>
-        <div class="lp-cta">
-          <a class="lp-btn lp-btn-primary" href="<?php echo $REGISTER; ?>">Create your shop <i class="fa-solid fa-arrow-right"></i></a>
-          <a class="lp-btn lp-btn-ghost" href="<?php echo $LOGIN; ?>">Log in</a>
-        </div>
-        <div class="lp-trust">
-          <span><i class="fa-solid fa-mobile-screen"></i> Works on any phone</span>
-          <span><i class="fa-solid fa-shield-halved"></i> Email-verified logins</span>
-          <span><i class="fa-solid fa-money-bill-wave"></i> Pay with M-Pesa</span>
-        </div>
-      </div>
-
-      <!-- signature: tilting 3D phone running the POS -->
-      <div class="lp-stage">
-        <div class="lp-phone-scene" id="lpScene">
-          <div class="lp-phone">
-            <div class="lp-notch"></div>
-            <div class="lp-screen">
-              <div class="lp-sbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-three-quarters"></i></span></div>
-              <div class="lp-appbar">
-                <span class="lp-av">A</span>
-                <div><b>Acme Beddings</b><small>New sale</small></div>
-              </div>
-              <div class="lp-sale">
-                <h5>Items</h5>
-                <div class="lp-row"><span>Duvet, King <span class="q">×1</span></span><span>4,500</span></div>
-                <div class="lp-row"><span>Bedsheet, Queen <span class="q">×2</span></span><span>4,400</span></div>
-                <div class="lp-row"><span>Towel set <span class="q">×1</span></span><span>800</span></div>
-                <div class="lp-total"><span>Total</span><b>KES 9,700</b></div>
-              </div>
-              <div class="lp-record"><i class="fa-solid fa-check"></i> Record sale</div>
-              <div class="lp-toast"><i class="fa-solid fa-paper-plane"></i> Receipt emailed to customer</div>
+  <div class="stage" id="stage">
+    <div class="wrap" id="wrap">
+      <div class="card-shadow"></div>
+      <div class="card-glow"></div>
+      <div class="card-mid"></div>
+      <div class="card">
+        <div class="sheen" id="sheen"></div>
+        <div class="inner">
+          <div class="brand">
+            <div class="logo-box">
+              <img src="/Kitale/public/assets/images/logo/logo.png" alt="Kitale POS"
+                   onerror="this.style.display='none';this.parentNode.innerHTML+='<i class=\'fa-solid fa-layer-group logo-fallback\'></i>'">
             </div>
+            <h1>Kitale POS</h1>
+            <p>Run your shop from your phone</p>
           </div>
-          <div class="lp-chip lp-chip-1"><i style="background:var(--amber);" class="fa-solid fa-triangle-exclamation"></i><div>Low stock<small>Towels · 4 left</small></div></div>
-          <div class="lp-chip lp-chip-2"><i style="background:var(--teal);" class="fa-solid fa-check"></i><div>Sale recorded<small>Stock updated</small></div></div>
-          <div class="lp-chip lp-chip-3"><i style="background:#16a34a;" class="fa-solid fa-money-bill-wave"></i><div>M-Pesa<small>Subscription active</small></div></div>
+
+          <?php if ($loggedIn): ?>
+            <div class="lede">You're signed in</div>
+            <a class="portal owner" href="<?php echo $h($dashUrl); ?>">
+              <span class="ic"><i class="fa-solid fa-gauge-high"></i></span>
+              <span class="tx"><b>Open the POS</b><span>Continue to your dashboard</span></span>
+              <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+            <a class="portal staff" href="/Kitale/public/auth/logout.php">
+              <span class="ic"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+              <span class="tx"><b>Switch account</b><span>Log out and sign in as someone else</span></span>
+              <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+          <?php else: ?>
+            <div class="lede">Sign in to continue</div>
+            <a class="portal owner" href="<?php echo $h($LOGIN); ?>?as=owner">
+              <span class="ic"><i class="fa-solid fa-user-shield"></i></span>
+              <span class="tx"><b>Owner / Manager</b><span>Sales, stock, staff &amp; reports</span></span>
+              <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+            <a class="portal staff" href="<?php echo $h($LOGIN); ?>?as=staff">
+              <span class="ic"><i class="fa-solid fa-cash-register"></i></span>
+              <span class="tx"><b>Staff / Cashier</b><span>Make sales &amp; print receipts</span></span>
+              <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+          <?php endif; ?>
+
+          <button class="install-btn" id="installBtn" type="button">
+            <i class="fa-solid fa-circle-down"></i> Install app
+          </button>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ===== FEATURES ===== -->
-  <section class="lp-sec">
-    <div class="lp-wrap">
-      <div class="lp-head lp-reveal">
-        <span class="lp-kicker">Everything your counter needs</span>
-        <h2>One app for the whole shop</h2>
-        <p>The tools you'd expect from a full point-of-sale, sized to fit in your hand.</p>
-      </div>
-      <div class="lp-feat-grid">
-        <?php foreach ($features as $f): ?>
-          <article class="lp-card lp-reveal">
-            <div class="lp-ic"><i class="fa-solid <?php echo $f['icon']; ?>"></i></div>
-            <h3><?php echo $f['title']; ?></h3>
-            <p><?php echo $f['desc']; ?></p>
-          </article>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== HOW IT WORKS ===== -->
-  <section class="lp-sec lp-steps">
-    <div class="lp-wrap">
-      <div class="lp-head lp-reveal">
-        <span class="lp-kicker">Up and running today</span>
-        <h2>Three steps to your first sale</h2>
-      </div>
-      <div class="lp-steps-grid">
-        <?php foreach ($steps as $s): ?>
-          <div class="lp-step lp-reveal">
-            <div class="num"><?php echo $s['n']; ?></div>
-            <h3><?php echo $s['title']; ?></h3>
-            <p><?php echo $s['desc']; ?></p>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PRICING ===== -->
-  <section class="lp-sec">
-    <div class="lp-wrap">
-      <div class="lp-head lp-reveal">
-        <span class="lp-kicker">Simple pricing</span>
-        <h2>Pay weekly, every two weeks, or monthly</h2>
-        <p>Switch or cancel anytime. Billed by M-Pesa.</p>
-      </div>
-      <?php
-        $pp = $plans[0] ?? null;                 // the single public plan
-        $ppId = (int) ($pp['id'] ?? 0);
-        $cards = [
-          ['key' => 'weekly',   'label' => 'Weekly',        'per' => '/week',     'price' => $pp['price_weekly']   ?? null, 'best' => false],
-          ['key' => 'biweekly', 'label' => 'Every 2 weeks', 'per' => '/2 weeks',  'price' => $pp['price_biweekly'] ?? null, 'best' => false],
-          ['key' => 'monthly',  'label' => 'Monthly',       'per' => '/month',    'price' => $pp['price_monthly']  ?? null, 'best' => true],
-        ];
-      ?>
-      <div class="lp-price-grid lp-price-3">
-        <?php foreach ($cards as $c): if ($c['price'] === null) continue;
-          $href = $REGISTER . '?plan_id=' . $ppId . '&interval=' . $c['key']; ?>
-          <div class="lp-plan lp-reveal <?php echo $c['best'] ? 'featured' : ''; ?>">
-            <?php if ($c['best']): ?><span class="tag">Best value</span><?php endif; ?>
-            <h3><?php echo htmlspecialchars($c['label']); ?></h3>
-            <div class="sub"><?php echo htmlspecialchars($pp['name'] ?? 'Standard'); ?> plan</div>
-            <div class="price"><?php echo lp_money($c['price']); ?><small class="lp-per"><?php echo $c['per']; ?></small></div>
-            <ul>
-              <li><i class="fa-solid fa-check"></i> <?php echo ($pp['max_staff'] ?? null) === null ? 'Unlimited staff' : ((int)$pp['max_staff'] . ' staff accounts'); ?></li>
-              <li><i class="fa-solid fa-check"></i> <?php echo ($pp['max_products'] ?? null) === null ? 'Unlimited products' : ('Up to ' . (int)$pp['max_products'] . ' products'); ?></li>
-              <li><i class="fa-solid fa-check"></i> Sales, receipts &amp; reports</li>
-              <li><i class="fa-solid fa-check"></i> Low-stock alerts</li>
-              <li><i class="fa-solid fa-check"></i> Customer restock notices</li>
-            </ul>
-            <a class="lp-btn <?php echo $c['best'] ? 'lp-btn-primary' : 'lp-btn-dark'; ?>" href="<?php echo $href; ?>">Start <?php echo htmlspecialchars(strtolower($c['label'])); ?></a>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FINAL CTA ===== -->
-  <section class="lp-final">
-    <div class="lp-wrap lp-reveal">
-      <h2>Your shop, in your pocket.</h2>
-      <p>Create your account in a minute and record your first sale today.</p>
-      <a class="lp-btn lp-btn-primary" href="<?php echo $REGISTER; ?>">Create your shop <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-  </section>
-
-</div>
+  <p class="hint" id="iosHint" style="display:none;">
+    To install: tap <b>Share</b> <i class="fa-solid fa-arrow-up-from-bracket"></i> then <b>Add to Home Screen</b>.
+  </p>
+  <p class="foot">Kitale POS &middot; works on phone &amp; desktop</p>
 
 <script>
 (function(){
-  'use strict';
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* Pointer-tilt the phone scene (desktop, fine pointers only) — the signature moment. */
-  var scene = document.getElementById('lpScene');
-  var finePointer = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
-  if (scene && finePointer && !reduce){
-    var hero = scene.closest('.lp-hero'); var raf = null, tx = 0, ty = 0;
-    hero.addEventListener('mousemove', function(e){
-      var r = hero.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width - 0.5;
-      var py = (e.clientY - r.top) / r.height - 0.5;
-      tx = px * 16; ty = py * -16;
-      if (!raf) raf = requestAnimationFrame(apply);
-    });
-    hero.addEventListener('mouseleave', function(){ tx = 0; ty = 0; if(!raf) raf = requestAnimationFrame(apply); });
-    function apply(){ raf = null; scene.style.transform = 'rotateY(' + tx + 'deg) rotateX(' + ty + 'deg)'; }
+  var s=document.getElementById('stars');
+  for(var i=0;i<110;i++){
+    var el=document.createElement('div');el.className='star';
+    var sz=Math.random()*2.4+0.4;
+    el.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--d:'+(Math.random()*4+2)+'s;animation-delay:'+(Math.random()*4)+'s';
+    s.appendChild(el);
   }
 
-  /* Scroll reveal */
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
-    }, { threshold:0.14 });
-    document.querySelectorAll('.lp-reveal').forEach(function(el){ io.observe(el); });
-  } else {
-    document.querySelectorAll('.lp-reveal').forEach(function(el){ el.classList.add('in'); });
-  }
+  var wrap=document.getElementById('wrap'),sheen=document.getElementById('sheen'),
+      stage=document.getElementById('stage');
+
+  document.addEventListener('mousemove',function(e){
+    if(!wrap)return;
+    var r=wrap.getBoundingClientRect();
+    var dx=(e.clientX-(r.left+r.width/2))/r.width;
+    var dy=(e.clientY-(r.top+r.height/2))/r.height;
+    wrap.style.transform='rotateX('+(dy*14)+'deg) rotateY('+(-dx*14)+'deg)';
+    stage.style.animation='none';
+    sheen.style.background='radial-gradient(circle at '+((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%,rgba(255,255,255,.09) 0%,transparent 55%)';
+  });
+  document.addEventListener('mouseleave',function(){
+    if(wrap)wrap.style.transform='';
+    if(stage)stage.style.animation='bob 6s ease-in-out infinite';
+    if(sheen)sheen.style.background='';
+  });
+
+  var deferred=null,btn=document.getElementById('installBtn');
+  var standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;if(btn&&!standalone)btn.style.display='flex';});
+  if(btn)btn.addEventListener('click',function(){if(!deferred)return;deferred.prompt();deferred.userChoice.finally(function(){deferred=null;btn.style.display='none';});});
+  window.addEventListener('appinstalled',function(){if(btn)btn.style.display='none';});
+
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isSafari=/^((?!chrome|crios|fxios).)*safari/i.test(navigator.userAgent);
+  if(isIOS&&isSafari&&!standalone){var h=document.getElementById('iosHint');if(h)h.style.display='block';}
 })();
 </script>
-<?php
-$content = ob_get_clean();
-require_once __DIR__ . '/templates/public/layout.php';
+</body>
+</html>

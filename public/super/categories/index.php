@@ -1,7 +1,7 @@
 <?php
 // public/super/categories/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::auth();
 
 $pdo = Database::pdo();
 $C = new Models\CategoryModel($pdo);
@@ -18,7 +18,7 @@ $subEditId  = (int) ($_GET['sub_edit'] ?? 0);
 $subEditRow = $subEditId > 0 ? $S->find($subEditId) : null;
 if ($subEditRow && (int) $subEditRow['category_id'] !== $editId) { $subEditRow = null; }
 
-$base    = '/Modern/public/super/categories/';
+$base    = '/Kitale/public/super/categories/';
 $editUrl = $base . '?edit=';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

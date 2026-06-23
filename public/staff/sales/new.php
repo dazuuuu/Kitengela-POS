@@ -1,7 +1,7 @@
 <?php
 // public/staff/sales/new.php  — point-of-sale: record a sale
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::capability(Capabilities::SALES_RECORD);
+PageGuard::auth(Capabilities::SALES_RECORD);
 
 $pdo = Database::pdo();
 
@@ -18,7 +18,7 @@ $tenantSlug = $__tenant['slug'] ?? '';
 $shopName   = $__tenant['name'] ?? 'Our Shop';
 $catalogueUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
               . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-              . '/Modern/public/catalogue.php?shop=' . urlencode($tenantSlug);
+              . '/Kitale/public/catalogue.php?shop=' . urlencode($tenantSlug);
 
 $P = new Models\ProductModel($pdo);
 $products = $P->sellable();   // now includes image_path
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
     if ($res['ok']) {
         $_SESSION['flash']['success'] = 'Sale recorded — ' . $res['receipt_number'] . '.';
-        header('Location: /Modern/public/staff/sales/receipt.php?id=' . $res['sale_id']);
+        header('Location: /Kitale/public/staff/sales/receipt.php?id=' . $res['sale_id']);
         exit;
     }
     $error = $res['errors']['_'] ?? ($res['errors']['payment_method'] ?? ($res['errors']['amount_given'] ?? 'Could not record the sale.'));

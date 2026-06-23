@@ -1,24 +1,21 @@
 <?php
 // public/auth/login.php
-// Step 1 of login: verify credentials + account/subscription state, then issue an
-// email OTP and hand off to 2FA. A full session is NOT created here — only a
-// "pending 2FA" marker — so nothing protected is reachable until the code is verified.
+// Single-step login: verify credentials + account state, then establish the
+// full session and go to the dashboard. No 2FA on login. (OTP is still used for
+// password reset — that flow is separate and untouched.)
 require_once __DIR__ . '/../../app/app.php';
-require_once ROOT_PATH . '/app/services/emails/otp_email.php';
 
 // Already fully logged in with a recognised role? Go to the right dashboard.
 // A session that claims to be logged in but carries no valid role is stale or
-// half-built (e.g. left over from an earlier build / dev shortcut). Don't trust
-// it — discard the auth state and show the login form rather than bouncing the
-// user into a guard that will only deny them.
+// half-built; don't trust it — discard the auth state and show the login form.
 if (!empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified'])) {
     $sessionRole = $_SESSION['role'] ?? null;
     if ($sessionRole === 'staff') {
-        header('Location: /Modern/public/staff/dashboard/');
+        header('Location: /Kitale/public/staff/dashboard/');
         exit;
     }
     if ($sessionRole === 'tenant_owner') {
-        header('Location: /Modern/public/super/dashboard/');
+        header('Location: /Kitale/public/super/dashboard/');
         exit;
     }
     // Unknown/empty role — broken session. Clear it and fall through to login.
@@ -30,7 +27,7 @@ if (!empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified'])) {
     TenantContext::reset();
 }
 
-$pdo = Database::pdo();
+$pdo  = Database::pdo();
 $auth = new AuthService($pdo);
 $error = '';
 $notice = '';
@@ -39,14 +36,14 @@ if (($_GET['reset'] ?? '') === '1') {
 } elseif (($_GET['denied'] ?? '') === '1') {
     $error = 'You don\'t have access to that page. Please sign in with the right account.';
 } elseif (($_GET['locked'] ?? '') === '1') {
-    $error = 'Your subscription needs attention before you can sign in.';
+    $error = 'Your account needs attention before you can sign in.';
 }
 $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+    $ip       = $_SERVER['REMOTE_ADDR'] ?? null;
 
     $user = $auth->findByEmail($email);
     if (!$user || !$auth->verifyPassword($user, $password)) {
@@ -58,36 +55,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$verdict['ok']) {
             $error = AccountGuard::message($verdict['reason']);
         } else {
-            // Credentials good -> start 2FA. Half-authenticated session only.
-            $otp = new OtpService($pdo);
-            $issue = $otp->issue((int) $user['id'], $user['tenant_id'] !== null ? (int) $user['tenant_id'] : null, 'login_2fa', $ip);
-            if ($issue['ok']) {
-                $shop = '';
-                if ($user['tenant_id'] !== null) {
-                    $t = (new Models\TenantModel($pdo))->find((int) $user['tenant_id']);
-                    $shop = $t['name'] ?? '';
-                }
-                $msg = build_otp_email($issue['code'], $shop !== '' ? $shop : 'your login');
-                $sent = (new MailService())->send($user['email'], $msg['subject'], $msg['html']);
-
-                // Local testing aid: surface the code on the next screen when SMTP
-                // isn't configured yet. OFF unless app/config/app.php sets
-                // ['otp_debug' => true]. Remove/disable before going live.
-                $appCfg = is_file(ROOT_PATH . '/app/config/app.php') ? require ROOT_PATH . '/app/config/app.php' : [];
-                if (!empty($appCfg['otp_debug'])) {
-                    $_SESSION['dev_otp'] = $issue['code'];
-                    $_SESSION['dev_mail_error'] = $sent ? '' : MailService::lastError();
-                    if (!$sent) { error_log('OTP not emailed (otp_debug on); code surfaced on screen.'); }
-                } else {
-                    unset($_SESSION['dev_otp'], $_SESSION['dev_mail_error']);
-                }
-            }
-            // Stash pending identity (NOT logged_in/otp_verified yet).
+            // Credentials good — no 2FA. Establish the full session right away.
+            // findByEmail already returns role_name + must_reset_password, so we
+            // can use $user directly.
             session_regenerate_id(true);
-            $_SESSION['pending_user_id']   = (int) $user['id'];
-            $_SESSION['pending_email']     = $user['email'];
-            $_SESSION['pending_tenant_id'] = $user['tenant_id'] !== null ? (int) $user['tenant_id'] : null;
-            header('Location: /Modern/public/verification/otp-verify.php');
+            TenantContext::establish($pdo, $user);
+            $_SESSION['username']     = $user['username'];
+            $_SESSION['logged_in']    = true;
+            $_SESSION['otp_verified'] = true;  // no 2FA step; kept true so existing guards pass
+            $_SESSION['first_login']  = true;
+
+            // First-time staff must change their temporary password before anything else.
+            $_SESSION['must_reset'] = !empty($user['must_reset_password']);
+            if ($_SESSION['must_reset'] && ($user['role_name'] ?? '') === 'staff') {
+                header('Location: /Kitale/public/staff/reset-password.php');
+                exit;
+            }
+
+            $dest = ($user['role_name'] === 'staff')
+                ? '/Kitale/public/staff/dashboard/'
+                : '/Kitale/public/super/dashboard/';
+            header('Location: ' . $dest);
             exit;
         }
     }
@@ -109,11 +97,11 @@ ob_start();
         <label class="form-label">Password</label>
         <input name="password" type="password" class="form-control">
     </div>
-    <button class="btn-auth">Continue</button>
+    <button class="btn-auth">Log in</button>
 </form>
 <div class="auth-foot">
-    No account yet? <a href="/Modern/public/auth/register.php">Create one</a><br>
-    <a href="/Modern/public/auth/forgot-password.php">Forgot password?</a>
+   
+    <a href="/Kitale/public/auth/forgot-password.php">Forgot password?</a>
 </div>
 <?php
 $content = ob_get_clean();

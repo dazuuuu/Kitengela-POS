@@ -1,7 +1,7 @@
 <?php
 // public/super/subcategories/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::auth();
 
 $pdo = Database::pdo();
 $C = new Models\CategoryModel($pdo);
@@ -12,7 +12,7 @@ $category = $categoryId > 0 ? $C->find($categoryId) : null;
 
 // No valid category selected → send back to categories.
 if (!$category) {
-    header('Location: /Modern/public/super/categories/');
+    header('Location: /Kitale/public/super/categories/');
     exit;
 }
 
@@ -24,7 +24,7 @@ if ($editRow && (int) $editRow['category_id'] !== $categoryId) { $editRow = null
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-    $base = '/Modern/public/super/subcategories/?category_id=' . $categoryId;
+    $base = '/Kitale/public/super/subcategories/?category_id=' . $categoryId;
     if ($action === 'create') {
         $old = trim($_POST['name'] ?? '');
         $res = $S->create($categoryId, $old);
@@ -50,7 +50,7 @@ $page_title = 'Subcategories';
 ob_start();
 ?>
 <div class="mb-3">
-  <a href="/Modern/public/super/categories/" class="text-decoration-none text-muted">&larr; Categories</a>
+  <a href="/Kitale/public/super/categories/" class="text-decoration-none text-muted">&larr; Categories</a>
   <h2 class="h4 mt-1 mb-0"><?php echo htmlspecialchars($category['name']); ?> <span class="text-muted fs-6">subcategories</span></h2>
 </div>
 <div class="row g-4">
@@ -69,7 +69,7 @@ ob_start();
                    value="<?php echo htmlspecialchars($editRow['name'] ?? $old); ?>" required autofocus>
           </div>
           <button class="btn btn-primary"><?php echo $editRow ? 'Save' : 'Add subcategory'; ?></button>
-          <?php if ($editRow): ?><a class="btn btn-link" href="/Modern/public/super/subcategories/?category_id=<?php echo $categoryId; ?>">Cancel</a><?php endif; ?>
+          <?php if ($editRow): ?><a class="btn btn-link" href="/Kitale/public/super/subcategories/?category_id=<?php echo $categoryId; ?>">Cancel</a><?php endif; ?>
         </form>
       </div>
     </div>
@@ -91,7 +91,7 @@ ob_start();
                   <td class="fw-semibold"><?php echo htmlspecialchars($s['name']); ?></td>
                   <td><?php echo $s['status'] === 'active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Draft</span>'; ?></td>
                   <td class="text-end">
-                    <a class="btn btn-sm btn-outline-secondary" href="/Modern/public/super/subcategories/?category_id=<?php echo $categoryId; ?>&edit=<?php echo (int)$s['id']; ?>">Edit</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/super/subcategories/?category_id=<?php echo $categoryId; ?>&edit=<?php echo (int)$s['id']; ?>">Edit</a>
                     <form method="post" class="d-inline">
                       <input type="hidden" name="action" value="toggle"><input type="hidden" name="category_id" value="<?php echo $categoryId; ?>"><input type="hidden" name="id" value="<?php echo (int)$s['id']; ?>">
                       <button class="btn btn-sm btn-outline-secondary"><?php echo $s['status'] === 'active' ? 'Draft' : 'Activate'; ?></button>

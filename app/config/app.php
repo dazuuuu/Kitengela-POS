@@ -4,10 +4,10 @@
 
 return [
     'app_name'     => 'Modern POS',
-    'app_url'      => 'http://localhost/Modern',   // change to your domain in production
+    'app_url'      => 'http://localhost/Kitale',   // change to your domain in production
     'debug'        => false,                         // set false in production
     'timezone'     => 'UTC',
-    'session_name' => 'modern_session',
+    'session_name' => 'kitale_session',
 
     // Security
     'hash_cost'    => 12,

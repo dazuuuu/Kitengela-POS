@@ -20,8 +20,8 @@ function redirect($url) {
 
 function getRoleBasedProfileUrl() {
     if (isAdmin()) {
-        return '/Modern/public/profile/admin/index.php';
+        return '/Kitale/public/profile/admin/index.php';
     }
-    return '/Modern/public/profile/client/index.php';
+    return '/Kitale/public/profile/client/index.php';
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 // public/staff/sales/receipt.php?id=N  — view / print / send a receipt
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::capability(Capabilities::SALES_VIEW);
+PageGuard::auth(Capabilities::SALES_VIEW);
 
 $pdo = Database::pdo();
 $SA  = new Models\SaleModel($pdo);
@@ -133,8 +133,8 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
       </div>
     </form>
     <div class="d-flex gap-2 mt-3">
-      <a href="/Modern/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
-      <a href="/Modern/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
+      <a href="/Kitale/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
+      <a href="/Kitale/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
     </div>
   </div>
 </body>

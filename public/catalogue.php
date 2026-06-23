@@ -71,9 +71,9 @@ $shopPhone  = $tenant['phone'] ?? '';
 $shopAddr   = $tenant['address'] ?? '';
 $currency   = $tenant['currency'] ?? 'KES';
 $logoPath   = $tenant['logo_path'] ?? null;
-$logoUrl    = $logoPath ? '/Modern' . ltrim($logoPath, '/Modern') : '/Modern/public/assets/images/logo/logo.png';
+$logoUrl    = $logoPath ? '/Kitale' . ltrim($logoPath, '/Kitale') : '/Kitale/public/assets/images/logo/logo.png';
 
-$baseUrl    = '/Modern/public/catalogue.php?shop=' . urlencode($shopSlug);
+$baseUrl    = '/Kitale/public/catalogue.php?shop=' . urlencode($shopSlug);
 $shareUrl   = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
             . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
             . $baseUrl;

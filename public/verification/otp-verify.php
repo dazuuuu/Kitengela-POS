@@ -7,7 +7,7 @@ require_once ROOT_PATH . '/app/services/emails/otp_email.php';
 
 $pendingId = $_SESSION['pending_user_id'] ?? null;
 if (!$pendingId) {
-    header('Location: /Modern/public/auth/login.php');
+    header('Location: /Kitale/public/auth/login.php');
     exit;
 }
 
@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // First-time staff must change their temporary password before anything else.
         $_SESSION['must_reset'] = !empty($user['must_reset_password']);
         if ($_SESSION['must_reset'] && ($user['role_name'] ?? '') === 'staff') {
-            header('Location: /Modern/public/staff/reset-password.php');
+            header('Location: /Kitale/public/staff/reset-password.php');
             exit;
         }
 
         $dest = ($user['role_name'] === 'staff')
-            ? '/Modern/public/staff/dashboard/'
-            : '/Modern/public/super/dashboard/';
+            ? '/Kitale/public/staff/dashboard/'
+            : '/Kitale/public/super/dashboard/';
         header('Location: ' . $dest);
         exit;
     }
@@ -88,8 +88,8 @@ ob_start();
     <button class="btn-auth">Verify &amp; continue</button>
 </form>
 <div class="auth-foot">
-    Didn't get it? <a href="/Modern/public/verification/otp-verify.php?resend=1">Resend code</a><br>
-    <a href="/Modern/public/auth/login.php">Back to login</a>
+    Didn't get it? <a href="/Kitale/public/verification/otp-verify.php?resend=1">Resend code</a><br>
+    <a href="/Kitale/public/auth/login.php">Back to login</a>
 </div>
 <?php
 $content = ob_get_clean();

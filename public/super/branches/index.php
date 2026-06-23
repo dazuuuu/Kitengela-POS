@@ -1,7 +1,7 @@
 <?php
 // public/super/branches/index.php
 require_once __DIR__ . '/../../../app/app.php';
-PageGuard::tenant();
+PageGuard::auth();
 
 $pdo = Database::pdo();
 $bm  = new Models\BranchModel($pdo);
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     $res = $bm->create($old['title'], $old['location']);
     if ($res['ok']) {
         $_SESSION['flash']['success'] = 'Branch "' . $old['title'] . '" created.';
-        header('Location: /Modern/public/super/branches/');
+        header('Location: /Kitale/public/super/branches/');
         exit;
     }
     $error = $res['error'];
@@ -68,7 +68,7 @@ ob_start();
               </tbody>
             </table>
           </div>
-          <a class="btn btn-sm btn-outline-secondary mt-3" href="/Modern/public/super/staff/">Manage staff</a>
+          <a class="btn btn-sm btn-outline-secondary mt-3" href="/Kitale/public/super/staff/">Manage staff</a>
         <?php endif; ?>
       </div>
     </div>

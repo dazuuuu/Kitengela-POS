@@ -1,31 +1,40 @@
 <?php
 // app/helpers/PageGuard.php
-// Per-request gate for protected pages. Enforces: fully authenticated (password
-// AND OTP), correct role, and a valid subscription. Redirects otherwise.
+// Per-request gate for protected pages.
+// SINGLE-TENANT BUILD: subscription gating is disabled (no plans to pay for).
+// Authentication (password + OTP) and role/capability checks still apply.
 
 class PageGuard
 {
-    const LOGIN_URL = '/Modern/public/auth/login.php';
-    const STAFF_RESET_URL = '/Modern/public/staff/reset-password.php';
+    const LOGIN_URL = '/Kitale/public/auth/login.php';
+    const STAFF_RESET_URL = '/Kitale/public/staff/reset-password.php';
 
-    /** Require a fully-authenticated tenant OWNER with an active subscription. */
+    /** Any fully-authenticated user (owner or staff). No role/subscription gate. */
+    public static function auth(): void
+    {
+        self::requireFullAuth();
+        if (TenantContext::role() === 'staff' && !empty($_SESSION['must_reset'])) {
+            header('Location: ' . self::STAFF_RESET_URL);
+            exit;
+        }
+    }
+
+    /** Require a fully-authenticated tenant OWNER. */
     public static function tenant(): void
     {
         self::requireFullAuth();
         if (TenantContext::role() !== 'tenant_owner') {
             self::deny();
         }
-        self::requireActiveSubscription();
     }
 
-    /** Require a fully-authenticated STAFF member with an active subscription. */
+    /** Require a fully-authenticated STAFF member. */
     public static function staff(): void
     {
         self::requireFullAuth();
         if (TenantContext::role() !== 'staff') {
             self::deny();
         }
-        self::requireActiveSubscription();
         if (!empty($_SESSION['must_reset'])) {
             header('Location: ' . self::STAFF_RESET_URL);
             exit;
@@ -36,7 +45,6 @@ class PageGuard
     public static function capability(string $cap): void
     {
         self::requireFullAuth();
-        self::requireActiveSubscription();
         if (!TenantContext::can($cap)) {
             self::deny();
         }
@@ -55,20 +63,10 @@ class PageGuard
         }
     }
 
+    /** Kept as a no-op so any remaining callers are harmless in the single-tenant build. */
     private static function requireActiveSubscription(): void
     {
-        $tenantId = TenantContext::tenantId();
-        if ($tenantId === null) {
-            return; // platform users aren't subscription-gated
-        }
-        $sub = (new Models\SubscriptionModel(Database::pdo()))->forTenant($tenantId);
-        $user = ['is_active' => 1, 'email_verified' => 1, 'tenant_id' => $tenantId];
-        $verdict = AccountGuard::evaluate($user, $sub);
-        if (!$verdict['ok']) {
-            $_SESSION['flash']['error'] = AccountGuard::message($verdict['reason']);
-            header('Location: ' . self::LOGIN_URL . '?locked=1');
-            exit;
-        }
+        return;
     }
 
     private static function deny(): void

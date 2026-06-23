@@ -151,4 +151,75 @@ class StaffService
         $stmt->execute([$tenantId]);
         return (string) ($stmt->fetchColumn() ?: 'your shop');
     }
+
+    // ===== per-staff capability management ==============================
+
+    /** roles.id for the 'staff' role. */
+    public function staffRoleId(): ?int
+    {
+        $id = $this->db->query("SELECT id FROM roles WHERE role_name = 'staff' LIMIT 1")->fetchColumn();
+        return $id !== false ? (int) $id : null;
+    }
+
+    /** The capabilities a role grants by default (source of truth = roles table). */
+    public function roleDefaultCaps(string $role = 'staff'): array
+    {
+        $stmt = $this->db->prepare("SELECT capabilities FROM roles WHERE role_name = ? LIMIT 1");
+        $stmt->execute([$role]);
+        $json = $stmt->fetchColumn();
+        return $json ? (json_decode($json, true) ?: []) : [];
+    }
+
+    /** One staff member that belongs to this tenant (or null). */
+    public function findStaff(int $tenantId, int $userId): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT u.id, u.username, u.email, u.is_active, u.branch_id, b.title AS branch_title
+               FROM users u
+               JOIN roles r ON r.id = u.role_id
+          LEFT JOIN branches b ON b.id = u.branch_id
+              WHERE u.id = ? AND u.tenant_id = ? AND r.role_name = 'staff' LIMIT 1"
+        );
+        $stmt->execute([$userId, $tenantId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    /** Effective capabilities for a staff member (role defaults + grants − revokes). */
+    public function effectiveCaps(int $userId, int $roleId): array
+    {
+        return Capabilities::effective($this->db, $userId, $roleId);
+    }
+
+    /**
+     * Persist desired capabilities for a staff member. Only capabilities in
+     * $manageable are touched (never owner-only powers). Overrides are stored
+     * only where the desired state differs from the role default, so the table
+     * stays minimal and correct.
+     */
+    public function setCapabilities(int $tenantId, int $userId, array $desired, array $manageable, array $roleDefaults): void
+    {
+        $del = $this->db->prepare("DELETE FROM user_permissions WHERE user_id = ? AND capability = ?");
+        $up  = $this->db->prepare(
+            "INSERT INTO user_permissions (tenant_id, user_id, capability, effect)
+             VALUES (?,?,?,?)
+             ON DUPLICATE KEY UPDATE effect = VALUES(effect)"
+        );
+        $this->db->beginTransaction();
+        try {
+            foreach ($manageable as $cap) {
+                $want = in_array($cap, $desired, true);
+                $def  = in_array($cap, $roleDefaults, true);
+                if ($want === $def) {
+                    $del->execute([$userId, $cap]);          // back to default → no override
+                } else {
+                    $up->execute([$tenantId, $userId, $cap, $want ? 'grant' : 'revoke']);
+                }
+            }
+            $this->db->commit();
+        } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) { $this->db->rollBack(); }
+            throw $e;
+        }
+    }
 }
