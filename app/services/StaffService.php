@@ -15,7 +15,7 @@ class StaffService
 
     /**
      * @param int   $tenantId  the owner's tenant
-     * @param array $in        email, name (optional), branch_id
+     * @param array $in        email, name (optional), branch_id (optional — NULL = all branches)
      * @param callable $notify fn(array $info): void  // info: email,name,temp_password,shop
      * @return array ['ok'=>bool, 'user_id'=>?int, 'temp_password'=>?string, 'errors'=>array]
      */
@@ -23,14 +23,14 @@ class StaffService
     {
         $email = strtolower(trim($in['email'] ?? ''));
         $name  = trim($in['name'] ?? '');
-        $branchId = (int) ($in['branch_id'] ?? 0);
+        $branchId = isset($in['branch_id']) && (int) $in['branch_id'] > 0 ? (int) $in['branch_id'] : null;
         $errors = [];
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Enter a valid email address.';
         }
-        if (!$this->branchBelongsToTenant($branchId, $tenantId)) {
-            $errors['branch_id'] = 'Choose a branch.';
+        if ($branchId !== null && !$this->branchBelongsToTenant($branchId, $tenantId)) {
+            $errors['branch_id'] = 'Choose a valid branch.';
         }
         // Login is by email alone, so emails must be unique across ALL users.
         if (!$errors && $this->emailExists($email)) {

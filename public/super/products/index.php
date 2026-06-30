@@ -8,11 +8,14 @@ $C = new Models\CategoryModel($pdo);
 $S = new Models\SubcategoryModel($pdo);
 $P = new Models\ProductModel($pdo);
 
+$base = '/Kitale/public/super/products/';
+
 $categories = $C->all([], 'name ASC');
 $allSubs    = $S->all([], 'name ASC');
 
-$editId  = (int) ($_GET['edit'] ?? 0);
+$editId  = (int) ($_GET['edit'] ?? $_POST['id'] ?? 0);
 $editRow = $editId > 0 ? $P->find($editId) : null;
+if (!$editRow) { $editId = 0; }
 
 $errors = [];
 $old = [];
@@ -41,22 +44,27 @@ function product_handle_image(array $file): array
     if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $name)) {
         return ['ok' => false, 'error' => 'Could not save the image. Check folder permissions.'];
     }
-    return ['ok' => true, 'path' => '/Modern/public/assets/uploads/products/' . $name];
+    return ['ok' => true, 'path' => '/Kitale/public/assets/uploads/products/' . $name];
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
+    $postId = (int) ($_POST['id'] ?? 0);
+    if ($postId > 0) {
+        $editId = $postId;
+        $editRow = $P->find($editId) ?: null;
+    }
 
     if ($action === 'toggle') {
         $row = $P->find((int) ($_POST['id'] ?? 0));
         if ($row) { $P->setStatus((int) $row['id'], $row['status'] === 'active' ? 'draft' : 'active'); }
         $_SESSION['flash']['success'] = 'Product status updated.';
-        header('Location: /Modern/public/super/products/'); exit;
+        header('Location: ' . $base); exit;
     }
     if ($action === 'delete') {
         $P->deleteSafe((int) ($_POST['id'] ?? 0));
         $_SESSION['flash']['success'] = 'Product deleted.';
-        header('Location: /Modern/public/super/products/'); exit;
+        header('Location: ' . $base); exit;
     }
 
     // create / save (active) or draft
@@ -88,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $res = $editRow ? $P->edit($editId, $in) : $P->create($in);
         if ($res['ok']) {
             $_SESSION['flash']['success'] = $editRow ? 'Product updated.' : 'Product "' . $in['name'] . '" added.';
-            header('Location: /Modern/public/super/products/'); exit;
+            header('Location: ' . $base); exit;
         }
         $errors = $res['errors'];
     }
@@ -132,6 +140,7 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
 
         <form method="post" enctype="multipart/form-data" novalidate>
           <input type="hidden" name="action" value="save">
+          <?php if ($editRow): ?><input type="hidden" name="id" value="<?php echo (int)$editRow['id']; ?>"><?php endif; ?>
 
           <div class="row g-2">
             <div class="col-7 mb-3">
@@ -222,7 +231,7 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
 
           <button class="btn btn-primary" name="action" value="save"><?php echo $editRow ? 'Save product' : 'Add product'; ?></button>
           <button class="btn btn-outline-secondary" name="action" value="draft">Save as draft</button>
-          <?php if ($editRow): ?><a class="btn btn-link" href="/Modern/public/super/products/">Cancel</a><?php endif; ?>
+          <?php if ($editRow): ?><a class="btn btn-link" href="<?php echo $base; ?>">Cancel</a><?php endif; ?>
         </form>
       </div>
     </div>
@@ -264,7 +273,7 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
                   <td class="text-end">KES <?php echo number_format($pf['unit_profit'], 0); ?><div class="text-muted small"><?php echo $pf['margin_pct'] !== null ? $pf['margin_pct'] . '%' : '—'; ?></div></td>
                   <td><?php echo $p['status'] === 'active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Draft</span>'; ?></td>
                   <td class="text-end" style="white-space:nowrap;">
-                    <a class="btn btn-sm btn-outline-secondary" href="/Modern/public/super/products/?edit=<?php echo (int)$p['id']; ?>">Edit</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="<?php echo $base; ?>?edit=<?php echo (int)$p['id']; ?>">Edit</a>
                     <form method="post" class="d-inline">
                       <input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="<?php echo (int)$p['id']; ?>">
                       <button class="btn btn-sm btn-outline-secondary"><?php echo $p['status'] === 'active' ? 'Draft' : 'Activate'; ?></button>
