@@ -25,11 +25,19 @@ class SubscriptionModel extends Model
 
     public function forTenant(int $tenantId): ?array
     {
-        $stmt = $this->db->prepare(
-            'SELECT * FROM subscriptions WHERE tenant_id = ? ORDER BY id DESC LIMIT 1'
-        );
-        $stmt->execute([$tenantId]);
-        return $stmt->fetch() ?: null;
+        try {
+            $stmt = $this->db->prepare(
+                'SELECT * FROM subscriptions WHERE tenant_id = ? ORDER BY id DESC LIMIT 1'
+            );
+            $stmt->execute([$tenantId]);
+            return $stmt->fetch() ?: null;
+        } catch (\PDOException $e) {
+            // Single-tenant / legacy DBs may not have billing tables yet.
+            if ($e->getCode() === '42S02') {
+                return null;
+            }
+            throw $e;
+        }
     }
 
     /** Start (or renew) the active period. */
