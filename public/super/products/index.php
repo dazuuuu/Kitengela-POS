@@ -76,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'quantity'            => $_POST['quantity'] ?? '',
         'unit'                => $_POST['unit'] ?? 'piece',
         'buying_price'        => $_POST['buying_price'] ?? '',
-        'selling_price'       => $_POST['selling_price'] ?? '',
+        'wholesale_price'     => $_POST['wholesale_price'] ?? '',
+        'retail_price'        => $_POST['retail_price'] ?? '',
         'low_stock_threshold' => (int) ($_POST['low_stock_threshold'] ?? 10),
         'colors'              => array_filter(array_map('trim', explode(',', $_POST['colors'] ?? ''))),
         'sizes'               => array_filter(array_map('trim', explode(',', $_POST['sizes'] ?? ''))),
@@ -133,7 +134,7 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
     <div class="card border-0 shadow-sm" style="border-radius:12px;">
       <div class="card-body p-4">
         <h2 class="h5 mb-1"><?php echo $editRow ? 'Edit product' : 'Add a product'; ?></h2>
-        <p class="text-muted small mb-3">Selling price is what your staff will see at the till.</p>
+        <p class="text-muted small mb-3">Set buying, wholesale and retail prices. Stock value = buying price &times; quantity.</p>
 
         <?php if (!empty($errors['_'])): ?><div class="alert alert-danger py-2"><?php echo htmlspecialchars($errors['_']); ?></div><?php endif; ?>
         <?php if (!empty($errors['image'])): ?><div class="alert alert-danger py-2"><?php echo htmlspecialchars($errors['image']); ?></div><?php endif; ?>
@@ -174,7 +175,7 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
           <div class="row g-2">
             <div class="col-6 mb-3">
               <label class="form-label">Quantity in stock</label>
-              <input name="quantity" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('quantity')); ?>" placeholder="0">
+              <input name="quantity" id="qtyP" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('quantity')); ?>" placeholder="0">
               <?php if (!empty($errors['quantity'])): ?><small class="text-danger"><?php echo htmlspecialchars($errors['quantity']); ?></small><?php endif; ?>
             </div>
             <div class="col-6 mb-3">
@@ -188,18 +189,24 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
           </div>
 
           <div class="row g-2">
-            <div class="col-6 mb-3">
+            <div class="col-4 mb-3">
               <label class="form-label">Buying price (KES)</label>
               <input name="buying_price" id="buyP" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('buying_price')); ?>" placeholder="0">
               <?php if (!empty($errors['buying_price'])): ?><small class="text-danger"><?php echo htmlspecialchars($errors['buying_price']); ?></small><?php endif; ?>
             </div>
-            <div class="col-6 mb-3">
-              <label class="form-label">Selling price (KES)</label>
-              <input name="selling_price" id="sellP" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('selling_price')); ?>" placeholder="0">
-              <?php if (!empty($errors['selling_price'])): ?><small class="text-danger"><?php echo htmlspecialchars($errors['selling_price']); ?></small><?php endif; ?>
+            <div class="col-4 mb-3">
+              <label class="form-label">Wholesale (KES)</label>
+              <input name="wholesale_price" id="wholeP" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('wholesale_price', $val('selling_price'))); ?>" placeholder="0">
+              <?php if (!empty($errors['wholesale_price'])): ?><small class="text-danger"><?php echo htmlspecialchars($errors['wholesale_price']); ?></small><?php endif; ?>
+            </div>
+            <div class="col-4 mb-3">
+              <label class="form-label">Retail (KES)</label>
+              <input name="retail_price" id="retailP" type="number" step="0.01" min="0" class="form-control" value="<?php echo htmlspecialchars($val('retail_price', $val('selling_price'))); ?>" placeholder="0">
+              <?php if (!empty($errors['retail_price'])): ?><small class="text-danger"><?php echo htmlspecialchars($errors['retail_price']); ?></small><?php endif; ?>
             </div>
           </div>
 
+          <div id="stockValueBox" class="alert alert-light border py-2 small mb-2" style="display:none;"></div>
           <div id="profitBox" class="alert alert-secondary py-2 small mb-3" style="display:none;"></div>
 
           <div class="row g-2">
@@ -247,11 +254,17 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
         <?php else: ?>
           <div class="table-responsive">
             <table class="table align-middle mb-0">
-              <thead><tr class="text-muted small text-uppercase"><th></th><th>Product</th><th class="text-end">Stock</th><th class="text-end">Sell</th><th class="text-end">Profit</th><th>Status</th><th></th></tr></thead>
+              <thead><tr class="text-muted small text-uppercase"><th></th><th>Product</th><th class="text-end">Stock</th><th class="text-end">Retail</th><th class="text-end">Wholesale profit</th><th class="text-end">Retail profit</th><th>Status</th><th></th></tr></thead>
               <tbody>
                 <?php foreach ($products as $p):
-                    $pf = Models\ProductModel::profit((float)$p['buying_price'], (float)$p['selling_price']);
-                    $low = (float)$p['quantity'] <= (int)$p['low_stock_threshold'];
+                    $retail = (float)($p['retail_price'] ?? $p['selling_price']);
+                    $wholesale = (float)($p['wholesale_price'] ?? $p['selling_price']);
+                    $buy = (float)$p['buying_price'];
+                    $qty = (float)$p['quantity'];
+                    $pfW = Models\ProductModel::profit($buy, $wholesale);
+                    $pfR = Models\ProductModel::profit($buy, $retail);
+                    $stockVal = Models\ProductModel::stockValue($buy, $qty);
+                    $low = $qty <= (int)$p['low_stock_threshold'];
                 ?>
                 <tr>
                   <td style="width:46px;">
@@ -266,11 +279,13 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
                     <div class="text-muted small"><?php echo $p['category_name'] ? htmlspecialchars($p['category_name']) : 'Uncategorized'; ?><?php echo $p['subcategory_name'] ? ' · ' . htmlspecialchars($p['subcategory_name']) : ''; ?></div>
                   </td>
                   <td class="text-end <?php echo $low ? 'text-danger fw-semibold' : ''; ?>">
-                    <?php echo rtrim(rtrim(number_format((float)$p['quantity'], 2), '0'), '.'); ?> <span class="text-muted small"><?php echo htmlspecialchars($p['unit']); ?></span>
+                    <?php echo rtrim(rtrim(number_format($qty, 2), '0'), '.'); ?> <span class="text-muted small"><?php echo htmlspecialchars($p['unit']); ?></span>
+                    <div class="text-muted small">Cost KES <?php echo number_format($stockVal, 0); ?></div>
                     <?php if ($low): ?><i class="fas fa-triangle-exclamation ms-1" title="Low stock"></i><?php endif; ?>
                   </td>
-                  <td class="text-end">KES <?php echo number_format((float)$p['selling_price'], 0); ?></td>
-                  <td class="text-end">KES <?php echo number_format($pf['unit_profit'], 0); ?><div class="text-muted small"><?php echo $pf['margin_pct'] !== null ? $pf['margin_pct'] . '%' : '—'; ?></div></td>
+                  <td class="text-end">KES <?php echo number_format($retail, 0); ?></td>
+                  <td class="text-end">KES <?php echo number_format($pfW['unit_profit'], 0); ?><div class="text-muted small"><?php echo $pfW['margin_pct'] !== null ? $pfW['margin_pct'] . '%' : '—'; ?></div></td>
+                  <td class="text-end">KES <?php echo number_format($pfR['unit_profit'], 0); ?><div class="text-muted small"><?php echo $pfR['margin_pct'] !== null ? $pfR['margin_pct'] . '%' : '—'; ?></div></td>
                   <td><?php echo $p['status'] === 'active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Draft</span>'; ?></td>
                   <td class="text-end" style="white-space:nowrap;">
                     <a class="btn btn-sm btn-outline-secondary" href="<?php echo $base; ?>?edit=<?php echo (int)$p['id']; ?>">Edit</a>
@@ -311,18 +326,39 @@ $unitLabels = ['piece' => 'Piece(s)', 'g' => 'Grams (g)', 'kg' => 'Kilograms (kg
   }
   if (catSel) { catSel.addEventListener('change', function () { SELECTED_SUB = ''; fillSubs(); }); fillSubs(); }
 
-  // Live profit readout
-  var buyP = document.getElementById('buyP'), sellP = document.getElementById('sellP'), box = document.getElementById('profitBox');
+  // Live stock value + profit readout
+  var buyP = document.getElementById('buyP'), wholeP = document.getElementById('wholeP'),
+      retailP = document.getElementById('retailP'), qtyP = document.getElementById('qtyP'),
+      box = document.getElementById('profitBox'), stockBox = document.getElementById('stockValueBox');
   function calcProfit() {
-    var b = parseFloat(buyP.value), s = parseFloat(sellP.value);
-    if (isNaN(b) || isNaN(s)) { box.style.display = 'none'; return; }
-    var profit = s - b;
-    var margin = s > 0 ? (profit / s * 100) : 0;
+    var b = parseFloat(buyP.value), w = parseFloat(wholeP.value), r = parseFloat(retailP.value), q = parseFloat(qtyP.value) || 0;
+    if (isNaN(b)) { box.style.display = 'none'; stockBox.style.display = 'none'; return; }
+    if (!isNaN(q) && q >= 0) {
+      stockBox.style.display = 'block';
+      stockBox.innerHTML = 'Stock value at cost: <strong>KES ' + (b * q).toFixed(0) + '</strong> (buying &times; quantity)';
+    } else { stockBox.style.display = 'none'; }
+    if (isNaN(w) && isNaN(r)) { box.style.display = 'none'; return; }
+    var wProfit = isNaN(w) ? null : w - b;
+    var rProfit = isNaN(r) ? null : r - b;
     box.style.display = 'block';
-    box.className = 'alert py-2 small mb-3 ' + (profit >= 0 ? 'alert-success' : 'alert-danger');
-    box.innerHTML = 'Profit per ' + '<strong>KES ' + profit.toFixed(0) + '</strong>' + ' &middot; margin <strong>' + margin.toFixed(1) + '%</strong>';
+    var html = '';
+    if (wProfit !== null) {
+      var wMargin = w > 0 ? (wProfit / w * 100) : 0;
+      html += '<div><strong>Wholesale</strong> profit/unit: KES ' + wProfit.toFixed(0) + ' &middot; margin ' + wMargin.toFixed(1) + '%';
+      if (q > 0) html += ' &middot; total profit if all sold: KES ' + (wProfit * q).toFixed(0);
+      html += '</div>';
+    }
+    if (rProfit !== null) {
+      var rMargin = r > 0 ? (rProfit / r * 100) : 0;
+      html += '<div class="mt-1"><strong>Retail</strong> profit/unit: KES ' + rProfit.toFixed(0) + ' &middot; margin ' + rMargin.toFixed(1) + '%';
+      if (q > 0) html += ' &middot; total profit if all sold: KES ' + (rProfit * q).toFixed(0);
+      html += '</div>';
+    }
+    box.className = 'alert py-2 small mb-3 ' + ((wProfit !== null && wProfit < 0) || (rProfit !== null && rProfit < 0) ? 'alert-danger' : 'alert-success');
+    box.innerHTML = html;
   }
-  if (buyP && sellP) { buyP.addEventListener('input', calcProfit); sellP.addEventListener('input', calcProfit); calcProfit(); }
+  [buyP, wholeP, retailP, qtyP].forEach(function(el){ if(el) el.addEventListener('input', calcProfit); });
+  calcProfit();
 </script>
 <?php
 $content = ob_get_clean();

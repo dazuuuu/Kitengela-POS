@@ -10,7 +10,7 @@ class ProductModel extends Model
 
     /**
      * @param array $in name, category_id, subcategory_id, description, quantity,
-     *                  unit, buying_price, selling_price, colors[], sizes[],
+     *                  unit, buying_price, wholesale_price, retail_price, colors[], sizes[],
      *                  image_path, low_stock_threshold, status
      */
     public function create(array $in): array
@@ -46,8 +46,6 @@ class ProductModel extends Model
 
     public function deleteSafe(int $id): array
     {
-        // No sales module yet; once it exists, switch this to a soft delete so
-        // historical sales keep their product reference.
         $this->delete($id);
         return ['ok' => true, 'error' => null];
     }
@@ -58,9 +56,28 @@ class ProductModel extends Model
         $unit = $selling - $buying;
         return [
             'unit_profit' => round($unit, 2),
-            'margin_pct'  => $selling > 0 ? round($unit / $selling * 100, 1) : null, // share of selling price
-            'markup_pct'  => $buying > 0 ? round($unit / $buying * 100, 1) : null,    // markup over cost
+            'margin_pct'  => $selling > 0 ? round($unit / $selling * 100, 1) : null,
+            'markup_pct'  => $buying > 0 ? round($unit / $buying * 100, 1) : null,
         ];
+    }
+
+    /** Stock value at cost (buying price × quantity). */
+    public static function stockValue(float $buying, float $quantity): float
+    {
+        return round($buying * $quantity, 2);
+    }
+
+    /** Products grouped by category for the inventory overview. */
+    public function listGroupedByCategory(): array
+    {
+        $rows = $this->listWithMeta();
+        $grouped = [];
+        foreach ($rows as $p) {
+            $key = $p['category_name'] ?: 'Uncategorized';
+            $grouped[$key][] = $p;
+        }
+        ksort($grouped);
+        return $grouped;
     }
 
     /** Active products at or below their restock threshold (for alerts). */
@@ -76,25 +93,32 @@ class ProductModel extends Model
         return $stmt->fetchAll();
     }
 
-    /** Active, in-stock products for the till (selling price only — no cost). */
+    /** Active, in-stock products for the till. */
     public function sellable(): array
     {
         $tid = \TenantContext::tenantId();
         $stmt = $this->db->prepare(
-            "SELECT id, name, selling_price, quantity, unit, image_path
+            "SELECT id, name, selling_price, wholesale_price, retail_price, quantity, unit, image_path
                FROM products
               WHERE tenant_id = ? AND status = 'active' AND quantity > 0
            ORDER BY name ASC"
         );
         $stmt->execute([$tid]);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$r) {
+            $r['retail_price'] = (float) ($r['retail_price'] ?? $r['selling_price'] ?? 0);
+            $r['wholesale_price'] = (float) ($r['wholesale_price'] ?? $r['selling_price'] ?? 0);
+        }
+        return $rows;
     }
 
-    /** All active products with category names — for the public catalogue. No cost data exposed. */
+    /** All active products with category names — public catalogue uses retail price. */
     public function catalogueForTenant(int $tenantId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT p.id, p.name, p.selling_price, p.image_path, p.description, p.unit,
+            "SELECT p.id, p.name,
+                    COALESCE(NULLIF(p.retail_price, 0), p.selling_price) AS selling_price,
+                    p.image_path, p.description, p.unit,
                     c.name AS category_name, s.name AS subcategory_name
                FROM products p
           LEFT JOIN categories c  ON c.id = p.category_id
@@ -119,7 +143,12 @@ class ProductModel extends Model
            ORDER BY p.name ASC"
         );
         $stmt->execute([$tid]);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$r) {
+            $r['retail_price'] = (float) ($r['retail_price'] ?? $r['selling_price'] ?? 0);
+            $r['wholesale_price'] = (float) ($r['wholesale_price'] ?? $r['selling_price'] ?? 0);
+        }
+        return $rows;
     }
 
     // ---- internals ----
@@ -149,8 +178,11 @@ class ProductModel extends Model
         if (!is_numeric($in['buying_price'] ?? null) || (float) $in['buying_price'] < 0) {
             $errors['buying_price'] = 'Enter a valid buying price.';
         }
-        if (!is_numeric($in['selling_price'] ?? null) || (float) $in['selling_price'] < 0) {
-            $errors['selling_price'] = 'Enter a valid selling price.';
+        if (!is_numeric($in['wholesale_price'] ?? null) || (float) $in['wholesale_price'] < 0) {
+            $errors['wholesale_price'] = 'Enter a valid wholesale price.';
+        }
+        if (!is_numeric($in['retail_price'] ?? null) || (float) $in['retail_price'] < 0) {
+            $errors['retail_price'] = 'Enter a valid retail price.';
         }
         if (!is_numeric($in['quantity'] ?? null) || (float) $in['quantity'] < 0) {
             $errors['quantity'] = 'Enter a valid quantity.';
@@ -162,7 +194,6 @@ class ProductModel extends Model
     {
         $subId = (int) ($in['subcategory_id'] ?? 0);
         $catId = (int) ($in['category_id'] ?? 0);
-        // A subcategory implies its parent category — fill it in if left blank.
         if ($subId > 0 && $catId <= 0) {
             $catId = $this->subcategoryParent($subId);
         }
@@ -170,6 +201,8 @@ class ProductModel extends Model
         $sizes  = array_values(array_filter(array_map('trim', (array) ($in['sizes'] ?? []))));
         $status = $in['status'] ?? 'active';
         $status = in_array($status, ['active', 'draft'], true) ? $status : 'active';
+        $retail = (float) ($in['retail_price'] ?? $in['selling_price'] ?? 0);
+        $wholesale = (float) ($in['wholesale_price'] ?? 0);
         return [
             'category_id'         => $catId > 0 ? $catId : null,
             'subcategory_id'      => $subId > 0 ? $subId : null,
@@ -178,7 +211,9 @@ class ProductModel extends Model
             'quantity'            => (float) ($in['quantity'] ?? 0),
             'unit'                => $in['unit'] ?? 'piece',
             'buying_price'        => (float) ($in['buying_price'] ?? 0),
-            'selling_price'       => (float) ($in['selling_price'] ?? 0),
+            'selling_price'       => $retail,
+            'wholesale_price'     => $wholesale,
+            'retail_price'        => $retail,
             'colors'              => $colors ? json_encode($colors) : null,
             'sizes'               => $sizes ? json_encode($sizes) : null,
             'image_path'          => ($in['image_path'] ?? '') !== '' ? $in['image_path'] : null,

@@ -50,8 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $auth->logAttempt($email, $ip);
         $error = 'Invalid email or password.';
     } else {
-        $sub = $auth->subscriptionFor($user['tenant_id'] !== null ? (int) $user['tenant_id'] : null);
-        $verdict = AccountGuard::evaluate($user, $sub);
+        $verdict = AccountGuard::evaluate($user);
         if (!$verdict['ok']) {
             $error = AccountGuard::message($verdict['reason']);
         } else {

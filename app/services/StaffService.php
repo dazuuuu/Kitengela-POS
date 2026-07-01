@@ -133,16 +133,23 @@ class StaffService
         return (int) $stmt->fetchColumn();
     }
 
-    /** Active plan's max_staff, or null for unlimited / no active plan. */
+    /** Active plan's max_staff, or null for unlimited / no billing tables. */
     private function staffLimit(int $tenantId): ?int
     {
-        $stmt = $this->db->prepare(
-            'SELECT p.max_staff FROM subscriptions s JOIN subscription_plans p ON p.id = s.plan_id
-              WHERE s.tenant_id = ? ORDER BY s.id DESC LIMIT 1'
-        );
-        $stmt->execute([$tenantId]);
-        $v = $stmt->fetchColumn();
-        return ($v === false || $v === null) ? null : (int) $v;
+        try {
+            $stmt = $this->db->prepare(
+                'SELECT p.max_staff FROM subscriptions s JOIN subscription_plans p ON p.id = s.plan_id
+                  WHERE s.tenant_id = ? ORDER BY s.id DESC LIMIT 1'
+            );
+            $stmt->execute([$tenantId]);
+            $v = $stmt->fetchColumn();
+            return ($v === false || $v === null) ? null : (int) $v;
+        } catch (\PDOException $e) {
+            if ($e->getCode() === '42S02') {
+                return null;
+            }
+            throw $e;
+        }
     }
 
     private function shopName(int $tenantId): string
