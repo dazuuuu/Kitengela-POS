@@ -24,7 +24,7 @@ $tenantSlug   = $__tenant['slug'] ?? '';
 $shopName     = $__tenant['name'] ?? 'Our Shop';
 $catalogueUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
               . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-              . '/Kitale/public/catalogue.php?shop=' . urlencode($tenantSlug);
+              . '/Rongai/public/catalogue.php?shop=' . urlencode($tenantSlug);
 
 $page_title = 'My sales';
 ob_start();
@@ -50,7 +50,7 @@ ob_start();
     </div>
   </div>
   <div class="col-12 col-md-6 d-flex align-items-center gap-2 flex-wrap">
-    <a href="/Kitale/public/staff/sales/new.php" class="btn btn-primary">
+    <a href="/Rongai/public/staff/sales/new.php" class="btn btn-primary">
       <i class="fas fa-cash-register me-1"></i>Make a sale
     </a>
     <button type="button" class="btn btn-outline-secondary"
@@ -136,7 +136,7 @@ ob_start();
                   <div class="text-danger small">−<?php echo number_format((float)$s['discount_amount'], 0); ?> disc.</div>
                 <?php endif; ?>
               </td>
-              <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
+              <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Rongai/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
             </tr>
             <?php endforeach; ?>
           </tbody>

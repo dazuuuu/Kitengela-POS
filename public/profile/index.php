@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../app/helpers/functions.php';
 
 // Check if logged in
 if (!isLoggedIn()) {
-    redirect('/Kitale/public/auth/login.php');
+    redirect('/Rongai/public/auth/login.php');
 }
 
 $user_id = $_SESSION['user_id'];

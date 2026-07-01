@@ -6,11 +6,11 @@
 
 $__tenant   = $__tenant ?? null;
 $shopName   = $__tenant['name'] ?? 'My Shop';
-$logo = '/Kitale/public/assets/images/logo/logo.png';
+$logo = Branding::tenantLogo($__tenant);
 $username   = $_SESSION['username'] ?? 'User';
 $roleLabel  = TenantContext::role() === 'tenant_owner' ? 'Owner' : 'Staff';
 $uri        = $_SERVER['REQUEST_URI'] ?? '';
-$dashUrl    = TenantContext::role() === 'staff' ? '/Kitale/public/staff/dashboard/' : '/Kitale/public/super/dashboard/';
+$dashUrl    = TenantContext::role() === 'staff' ? '/Rongai/public/staff/dashboard/' : '/Rongai/public/super/dashboard/';
 
 $isOn = function (string $needle) use ($uri): string {
     return strpos($uri, $needle) !== false ? 'active' : '';
@@ -36,51 +36,57 @@ $isOn = function (string $needle) use ($uri): string {
         </a>
 
         <?php if (TenantContext::role() === 'staff' && TenantContext::can(Capabilities::SALES_VIEW)): ?>
-        <a class="t-link <?php echo $isOn('/staff/sales/'); ?>" href="/Kitale/public/staff/sales/"><i class="fas fa-receipt"></i><span>My sales</span></a>
+        <a class="t-link <?php echo $isOn('/staff/sales/'); ?>" href="/Rongai/public/staff/sales/"><i class="fas fa-receipt"></i><span>My sales</span></a>
         <?php endif; ?>
         <?php if (TenantContext::role() === 'tenant_owner'): ?>
-        <a class="t-link <?php echo $isOn('/super/sales'); ?>" href="/Kitale/public/super/sales/"><i class="fas fa-receipt"></i><span>Sales</span></a>
+        <a class="t-link <?php echo $isOn('/super/sales'); ?>" href="/Rongai/public/super/sales/"><i class="fas fa-receipt"></i><span>Sales</span></a>
         <?php endif; ?>
 
        
 
         <?php if (TenantContext::can(Capabilities::BRANCHES_MANAGE)): ?>
-        <a class="t-link <?php echo $isOn('/super/branches'); ?>" href="/Kitale/public/super/branches/">
+        <a class="t-link <?php echo $isOn('/super/branches'); ?>" href="/Rongai/public/super/branches/">
             <i class="fas fa-code-branch"></i><span>Branches</span>
         </a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::STAFF_MANAGE)): ?>
-        <a class="t-link <?php echo $isOn('/super/staff'); ?>" href="/Kitale/public/super/staff/">
+        <a class="t-link <?php echo $isOn('/super/staff'); ?>" href="/Rongai/public/super/staff/">
             <i class="fas fa-user-gear"></i><span>Staff</span>
         </a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::INVENTORY_EDIT)): ?>
-        <a class="t-link <?php echo $isOn('/super/categories'); ?><?php echo $isOn('/super/subcategories'); ?>" href="/Kitale/public/super/categories/">
+        <a class="t-link <?php echo $isOn('/super/categories'); ?><?php echo $isOn('/super/subcategories'); ?>" href="/Rongai/public/super/categories/">
             <i class="fas fa-tags"></i><span>Categories</span>
         </a>
-        <a class="t-link <?php echo $isOn('/super/inventory'); ?>" href="/Kitale/public/super/inventory/">
+        <a class="t-link <?php echo $isOn('/super/inventory'); ?>" href="/Rongai/public/super/inventory/">
             <i class="fas fa-warehouse"></i><span>Inventory</span>
         </a>
-        <a class="t-link <?php echo $isOn('/super/products'); ?>" href="/Kitale/public/super/products/">
+        <a class="t-link <?php echo $isOn('/super/products'); ?>" href="/Rongai/public/super/products/">
             <i class="fas fa-box"></i><span>Products</span>
         </a>
         <?php elseif (TenantContext::can(Capabilities::INVENTORY_VIEW)): ?>
-        <a class="t-link <?php echo $isOn('/super/inventory'); ?>" href="/Kitale/public/super/inventory/">
+        <a class="t-link <?php echo $isOn('/super/inventory'); ?>" href="/Rongai/public/super/inventory/">
             <i class="fas fa-warehouse"></i><span>Inventory</span>
         </a>
         <?php endif; ?>
 
+        <?php if (TenantContext::can(Capabilities::SETTINGS_MANAGE)): ?>
+        <a class="t-link <?php echo $isOn('/super/settings'); ?>" href="/Rongai/public/super/settings/">
+            <i class="fas fa-gear"></i><span>Settings</span>
+        </a>
+        <?php endif; ?>
+
         <?php if (TenantContext::can(Capabilities::REPORTS_VIEW)): ?>
-        <a class="t-link <?php echo $isOn('/super/reports'); ?>" href="/Kitale/public/super/reports/"><i class="fas fa-chart-line"></i><span>Reports</span></a>
+        <a class="t-link <?php echo $isOn('/super/reports'); ?>" href="/Rongai/public/super/reports/"><i class="fas fa-chart-line"></i><span>Reports</span></a>
         <?php endif; ?>
 
 
         <hr>
 
    
-        <a class="t-link t-danger" href="/Kitale/public/auth/logout.php">
+        <a class="t-link t-danger" href="/Rongai/public/auth/logout.php">
             <i class="fas fa-arrow-right-from-bracket"></i><span>Logout</span>
         </a>
     </nav>

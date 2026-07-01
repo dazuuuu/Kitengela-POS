@@ -6,7 +6,7 @@
 
 $__tenant   = $__tenant ?? null;
 $shopName   = $__tenant['name'] ?? 'My Shop';
-$logo = '/Kitale/public/assets/images/logo/logo.png';
+$logo = Branding::tenantLogo($__tenant);
 $username   = $_SESSION['username'] ?? 'User';
 $uri        = $_SERVER['REQUEST_URI'] ?? '';
 $isOn = function (string $needle) use ($uri): string {
@@ -28,37 +28,37 @@ $isOn = function (string $needle) use ($uri): string {
     </div>
 
     <nav class="t-nav">
-        <a class="t-link <?php echo $isOn('/dashboard'); ?>" href="/Kitale/public/staff/dashboard/">
+        <a class="t-link <?php echo $isOn('/dashboard'); ?>" href="/Rongai/public/staff/dashboard/">
             <i class="fas fa-gauge-high"></i><span>Dashboard</span>
         </a>
 
         <?php if (TenantContext::can(Capabilities::SALES_RECORD)): ?>
-        <a class="t-link <?php echo $isOn('/sales/new'); ?>" href="/Kitale/public/staff/sales/new.php">
+        <a class="t-link <?php echo $isOn('/sales/new'); ?>" href="/Rongai/public/staff/sales/new.php">
             <i class="fas fa-cash-register"></i><span>Make a sale</span>
         </a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::SALES_VIEW)): ?>
-        <a class="t-link <?php echo $isOn('/staff/sales/'); ?>" href="/Kitale/public/staff/sales/">
+        <a class="t-link <?php echo $isOn('/staff/sales/'); ?>" href="/Rongai/public/staff/sales/">
             <i class="fas fa-receipt"></i><span>My sales</span>
         </a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::INVENTORY_EDIT)): ?>
-        <a class="t-link <?php echo $isOn('/staff/products'); ?>" href="/Kitale/public/staff/products/">
+        <a class="t-link <?php echo $isOn('/staff/products'); ?>" href="/Rongai/public/staff/products/">
             <i class="fas fa-box"></i><span>Products</span>
         </a>
         <?php endif; ?>
 
         <?php if (TenantContext::can(Capabilities::INVENTORY_VIEW)): ?>
-        <a class="t-link <?php echo $isOn('/staff/catalogue'); ?>" href="/Kitale/public/staff/catalogue/">
+        <a class="t-link <?php echo $isOn('/staff/catalogue'); ?>" href="/Rongai/public/staff/catalogue/">
             <i class="fas fa-share-nodes"></i><span>Share catalogue</span>
         </a>
         <?php endif; ?>
 
         <hr>
 
-        <a class="t-link t-danger" href="/Kitale/public/auth/logout.php">
+        <a class="t-link t-danger" href="/Rongai/public/auth/logout.php">
             <i class="fas fa-arrow-right-from-bracket"></i><span>Logout</span>
         </a>
     </nav>

@@ -3,11 +3,11 @@
 // Application-level settings only. All mail/SMTP settings live in app/config/mail.php.
 
 return [
-    'app_name'     => 'Modern POS',
-    'app_url'      => 'http://localhost/Kitale',   // change to your domain in production
+    'app_name'     => 'Rongai POS',
+    'app_url'      => 'http://localhost/Rongai',   // change to your domain in production
     'debug'        => false,                         // set false in production
     'timezone'     => 'UTC',
-    'session_name' => 'kitale_session',
+    'session_name' => 'rongai_session',
 
     // Security
     'hash_cost'    => 12,

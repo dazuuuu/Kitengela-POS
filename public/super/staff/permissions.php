@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $staffId) {
         $desired = array_values(array_intersect($desired, $manageable)); // whitelist
         $svc->setCapabilities($tenantId, $staffId, $desired, $manageable, $roleDefaults);
         $_SESSION['flash']['success'] = 'Permissions updated for ' . ($staff['username'] ?? 'staff') . '.';
-        header('Location: /Kitale/public/super/staff/permissions.php?staff=' . $staffId);
+        header('Location: /Rongai/public/super/staff/permissions.php?staff=' . $staffId);
         exit;
     }
     $flash = 'That staff member was not found.';
@@ -63,13 +63,13 @@ ob_start();
   <!-- ===== staff picker ===== -->
   <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
     <h1 class="h5 mb-0 fw-bold">Staff permissions</h1>
-    <a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/super/staff/"><i class="fas fa-arrow-left me-1"></i>Back to staff</a>
+    <a class="btn btn-sm btn-outline-secondary" href="/Rongai/public/super/staff/"><i class="fas fa-arrow-left me-1"></i>Back to staff</a>
   </div>
   <p class="text-muted">Choose a staff member to set what they're allowed to do. Sensitive actions like <strong>entering stock</strong> and <strong>editing products</strong> are off by default — grant them only to people you trust.</p>
   <?php if (!$allStaff): ?>
     <div class="card border-0 shadow-sm" style="border-radius:14px;"><div class="card-body p-5 text-center text-muted">
       <i class="fas fa-user-group fa-2x mb-2 d-block" style="opacity:.3;"></i>
-      No staff yet. <a href="/Kitale/public/super/staff/">Add a staff member</a> first.
+      No staff yet. <a href="/Rongai/public/super/staff/">Add a staff member</a> first.
     </div></div>
   <?php else: ?>
   <div class="row g-3">
@@ -101,7 +101,7 @@ ob_start();
       <h1 class="h5 mb-0 fw-bold"><?php echo htmlspecialchars($staff['username']); ?></h1>
       <div class="small text-muted"><?php echo htmlspecialchars($staff['email'] ?? ''); ?> · <?php echo htmlspecialchars($staff['branch_title'] ?? 'No branch'); ?></div>
     </div>
-    <a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/super/staff/permissions.php"><i class="fas fa-arrow-left me-1"></i>All staff</a>
+    <a class="btn btn-sm btn-outline-secondary" href="/Rongai/public/super/staff/permissions.php"><i class="fas fa-arrow-left me-1"></i>All staff</a>
   </div>
 
   <div class="alert alert-info py-2 small"><i class="fas fa-circle-info me-1"></i> Changes take effect the next time this staff member logs in.</div>
@@ -131,7 +131,7 @@ ob_start();
     <?php endforeach; ?>
     <div class="d-flex gap-2">
       <button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk me-1"></i>Save permissions</button>
-      <a class="btn btn-outline-secondary" href="/Kitale/public/super/staff/permissions.php">Cancel</a>
+      <a class="btn btn-outline-secondary" href="/Rongai/public/super/staff/permissions.php">Cancel</a>
     </div>
   </form>
 

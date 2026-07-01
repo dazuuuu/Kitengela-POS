@@ -148,13 +148,12 @@
                         </div>
                         <!-- <span class="logo-name">Modern<span>POS</span></span> -->
                         <?php
-                        $logoPath = '/Kitale/public/assets/images/logo/logo.png';
-                        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $logoPath)):
+                        require_once ROOT_PATH . '/app/helpers/Branding.php';
+                        $authLogo = Branding::authLogo(class_exists('Database') ? Database::pdo() : null);
                         ?>
-                        <img src="<?php echo htmlspecialchars($logoPath); ?>" alt="Modern POS"
-                             style="height:36px;filter:brightness(0) invert(1) drop-shadow(0 0 8px rgba(37,99,235,.6))"
+                        <img src="<?php echo htmlspecialchars($authLogo); ?>" alt="Rongai POS"
+                             style="height:48px;max-width:180px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(37,99,235,.4))"
                              onerror="this.style.display='none'">
-                        <?php endif; ?>
                     </div>
                     <div class="auth-body">
                         <div class="badge-wrap">

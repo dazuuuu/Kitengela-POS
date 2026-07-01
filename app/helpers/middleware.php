@@ -13,7 +13,7 @@ class Middleware {
         SessionModel::start();
         
         if (!SessionModel::has('logged_in') || SessionModel::get('logged_in') !== true) {
-            header('Location: /Kitale/public/auth/login.php');
+            header('Location: /Rongai/public/auth/login.php');
             exit();
         }
     }
@@ -27,9 +27,9 @@ class Middleware {
         if (SessionModel::has('logged_in') && SessionModel::get('logged_in') === true) {
             $role = SessionModel::get('role');
             if ($role === 'admin' || $role === 'superadmin') {
-                header('Location: /Kitale/public/admin/dashboard.php');
+                header('Location: /Rongai/public/admin/dashboard.php');
             } else {
-                header('Location: /Kitale/public/profile/');
+                header('Location: /Rongai/public/profile/');
             }
             exit();
         }
@@ -45,7 +45,7 @@ class Middleware {
         
         // role_id 1 = superadmin, 2 = admin, 3 = user
         if ($roleId > 2) {
-            header('Location: /Kitale/public/auth/login.php?error=access_denied');
+            header('Location: /Rongai/public/auth/login.php?error=access_denied');
             exit();
         }
     }
@@ -59,7 +59,7 @@ class Middleware {
         $roleId = SessionModel::get('role_id');
         
         if ($roleId !== 1) {
-            header('Location: /Kitale/public/admin/dashboard.php?error=unauthorized');
+            header('Location: /Rongai/public/admin/dashboard.php?error=unauthorized');
             exit();
         }
     }

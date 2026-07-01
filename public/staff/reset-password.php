@@ -6,13 +6,13 @@ require_once __DIR__ . '/../../app/app.php';
 
 $loggedIn = !empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified']) && TenantContext::check();
 if (!$loggedIn || TenantContext::role() !== 'staff') {
-    header('Location: /Kitale/public/auth/login.php');
+    header('Location: /Rongai/public/auth/login.php');
     exit;
 }
 
 // Nothing to reset → go to the dashboard.
 if (empty($_SESSION['must_reset'])) {
-    header('Location: /Kitale/public/staff/dashboard/');
+    header('Location: /Rongai/public/staff/dashboard/');
     exit;
 }
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
         }
         session_destroy();
-        header('Location: /Kitale/public/auth/login.php?reset=1');
+        header('Location: /Rongai/public/auth/login.php?reset=1');
         exit;
     }
 }

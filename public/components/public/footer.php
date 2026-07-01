@@ -7,7 +7,7 @@
     <div class="footer-top">
         <div class="container footer-top-inner">
             <div class="footer-brand">
-                <a href="/Kitale/public/" class="footer-logo">
+                <a href="/Rongai/public/" class="footer-logo">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <rect width="12" height="12" fill="currentColor"/>
                         <rect x="16" width="12" height="12" fill="currentColor" opacity=".4"/>
@@ -39,11 +39,11 @@
             <nav class="footer-col" aria-label="Quick links">
                 <h6 class="footer-col-title">Quick links</h6>
                 <ul class="footer-links">
-                    <li><a href="/Kitale/public/">Home</a></li>
-                    <li><a href="/Kitale/public/projects/">Projects</a></li>
-                    <li><a href="/Kitale/public/services/">Services</a></li>
-                    <li><a href="/Kitale/public/blogs/">Blog</a></li>
-                    <li><a href="/Kitale/public/auth/register.php">Get started</a></li>
+                    <li><a href="/Rongai/public/">Home</a></li>
+                    <li><a href="/Rongai/public/projects/">Projects</a></li>
+                    <li><a href="/Rongai/public/services/">Services</a></li>
+                    <li><a href="/Rongai/public/blogs/">Blog</a></li>
+                    <li><a href="/Rongai/public/auth/register.php">Get started</a></li>
                 </ul>
             </nav>
 
@@ -64,7 +64,7 @@
                     <i class="fas fa-phone"></i>
                     <a href="tel:+254700000000">+254 700 000 000</a>
                 </p>
-                <a href="/Kitale/public/auth/register.php" class="btn btn--primary footer-cta-btn">
+                <a href="/Rongai/public/auth/register.php" class="btn btn--primary footer-cta-btn">
                     Let's Talk <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -258,7 +258,7 @@
 <script>
 // Populate footer categories from API
 (function () {
-  fetch('/Kitale/public/api/projects.php?action=get_categories')
+  fetch('/Rongai/public/api/projects.php?action=get_categories')
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(data => {
       if (data.success && Array.isArray(data.data)) {
@@ -267,7 +267,7 @@
         const items = data.data.slice(0, 6);
         list.innerHTML = items.length
           ? items.map(c =>
-              `<li><a href="/Kitale/public/projects/?category=${encodeURIComponent(c.category_slug)}">${c.category_name}</a></li>`
+              `<li><a href="/Rongai/public/projects/?category=${encodeURIComponent(c.category_slug)}">${c.category_name}</a></li>`
             ).join('')
           : '<li><span class="footer-placeholder">No categories yet</span></li>';
       }

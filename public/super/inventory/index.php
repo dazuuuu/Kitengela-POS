@@ -6,7 +6,7 @@ PageGuard::capability(Capabilities::INVENTORY_VIEW);
 $pdo = Database::pdo();
 $P = new Models\ProductModel($pdo);
 $grouped = $P->listGroupedByCategory();
-$productsBase = '/Kitale/public/super/products/';
+$productsBase = '/Rongai/public/super/products/';
 
 $totals = ['products' => 0, 'stock_value' => 0.0, 'retail_value' => 0.0];
 foreach ($grouped as $items) {

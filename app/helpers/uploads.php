@@ -7,7 +7,7 @@
 if (!defined('BASE_URL')) {
     // Web path to the /public folder. Centralise here; change once if the
     // app ever moves. (Matches the hardcoded /Modern/public used elsewhere.)
-    define('BASE_URL', '/Kitale/public');
+    define('BASE_URL', '/Rongai/public');
 }
 
 /* ====================================================================

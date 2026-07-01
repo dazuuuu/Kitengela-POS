@@ -6,8 +6,8 @@
 
 class PageGuard
 {
-    const LOGIN_URL = '/Kitale/public/auth/login.php';
-    const STAFF_RESET_URL = '/Kitale/public/staff/reset-password.php';
+    const LOGIN_URL = '/Rongai/public/auth/login.php';
+    const STAFF_RESET_URL = '/Rongai/public/staff/reset-password.php';
 
     /** Any fully-authenticated user (owner or staff). No role/subscription gate. */
     public static function auth(): void

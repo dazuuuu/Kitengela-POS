@@ -1,3 +1,3 @@
 <?php
-header("Location: /Kitale/public/");
+header("Location: /Rongai/public/");
 exit();

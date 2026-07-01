@@ -16,7 +16,7 @@ $tenantSlug = $__tenant['slug'] ?? '';
 $shopName   = $__tenant['name'] ?? 'Our Shop';
 $catalogueUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
               . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-              . '/Kitale/public/catalogue.php?shop=' . urlencode($tenantSlug);
+              . '/Rongai/public/catalogue.php?shop=' . urlencode($tenantSlug);
 
 $P = new Models\ProductModel($pdo);
 $products = $P->sellable();
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
     if ($res['ok']) {
         $_SESSION['flash']['success'] = 'Sale recorded — ' . $res['receipt_number'] . '.';
-        header('Location: /Kitale/public/staff/sales/receipt.php?id=' . $res['sale_id']);
+        header('Location: /Rongai/public/staff/sales/receipt.php?id=' . $res['sale_id']);
         exit;
     }
     $error = $res['errors']['_'] ?? ($res['errors']['payment_method'] ?? ($res['errors']['amount_given'] ?? ($res['errors']['discount_amount'] ?? 'Could not record the sale.')));

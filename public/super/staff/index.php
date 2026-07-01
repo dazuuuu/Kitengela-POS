@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     ];
 
     $appCfg  = is_file(ROOT_PATH . '/app/config/app.php') ? require ROOT_PATH . '/app/config/app.php' : [];
-    $loginUrl = rtrim($appCfg['app_url'] ?? 'http://localhost/Kitale', '/') . '/public/auth/login.php';
+    $loginUrl = rtrim($appCfg['app_url'] ?? 'http://localhost/Rongai', '/') . '/public/auth/login.php';
 
     $notify = function (array $info) use ($loginUrl) {
         $msg = build_staff_invite_email($info['name'], $info['temp_password'], $loginUrl, $info['shop']);
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
     if ($res['ok']) {
         $_SESSION['flash']['success'] = 'Staff account created — an invite with a temporary password was emailed to ' . $old['email'] . '.';
-        header('Location: /Kitale/public/super/staff/');
+        header('Location: /Rongai/public/super/staff/');
         exit;
     }
     $errors = $res['errors'];

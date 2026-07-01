@@ -15,7 +15,9 @@ if (!$sale) {
 }
 $items = $SA->items($id);
 
-$shop   = (new Models\TenantModel($pdo))->find(TenantContext::tenantId())['name'] ?? 'My Shop';
+$shop   = (new Models\TenantModel($pdo))->find(TenantContext::tenantId()) ?: [];
+$shopName = $shop['name'] ?? 'My Shop';
+$shopLogo = Branding::tenantLogo($shop);
 $branch = '';
 if (!empty($sale['branch_id'])) {
     $b = $pdo->prepare('SELECT title FROM branches WHERE id = ? AND tenant_id = ?');
@@ -28,7 +30,7 @@ $staff = (string) ($st->fetchColumn() ?: 'Staff');
 
 function money($n) { return 'KES ' . number_format((float) $n, 2); }
 
-function receipt_inner(array $sale, array $items, string $shop, string $branch, string $staff): string
+function receipt_inner(array $sale, array $items, string $shopName, string $shopLogo, string $branch, string $staff, ?string $footer = null): string
 {
     $h = fn($s) => htmlspecialchars((string) $s);
     $rows = '';
@@ -70,9 +72,11 @@ function receipt_inner(array $sale, array $items, string $shop, string $branch, 
         $cust = '<p style="margin:10px 0 0;font-size:12px;color:#64748b;">Customer: ' . $h($sale['customer_name'] ?: '—')
               . (!empty($sale['customer_phone']) ? ' · ' . $h($sale['customer_phone']) : '') . '</p>';
     }
+    $thanks = $footer !== null && $footer !== '' ? $h($footer) : 'Thank you for your business.';
     return '<div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:360px;margin:0 auto;color:#0f172a;">'
         . '<div style="text-align:center;border-bottom:2px dashed #cbd5e1;padding-bottom:10px;margin-bottom:10px;">'
-        . '<div style="font-size:18px;font-weight:700;">' . $h($shop) . '</div>'
+        . '<img src="' . $h($shopLogo) . '" alt="" style="max-height:48px;max-width:160px;object-fit:contain;margin-bottom:6px;">'
+        . '<div style="font-size:18px;font-weight:700;">' . $h($shopName) . '</div>'
         . ($branch ? '<div style="font-size:13px;color:#475569;">' . $h($branch) . '</div>' : '')
         . '<div style="font-size:12px;color:#64748b;margin-top:4px;">Receipt ' . $h($sale['receipt_number']) . '</div>'
         . '<div style="font-size:12px;color:#64748b;">' . $h(date('j M Y, g:i a', strtotime($sale['created_at']))) . '</div>'
@@ -84,7 +88,7 @@ function receipt_inner(array $sale, array $items, string $shop, string $branch, 
         . '<tr><td style="font-weight:700;padding-top:8px;">Total</td><td style="text-align:right;font-weight:700;padding-top:8px;">' . money($sale['total']) . '</td></tr>'
         . $payLine . '</table>'
         . $cust
-        . '<p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:14px;">Thank you for your business.</p>'
+        . '<p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:14px;">' . $thanks . '</p>'
         . '</div>';
 }
 
@@ -96,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'email
     if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $flash = 'Enter a valid email address.';
     } else {
-        $html = '<div style="background:#f8fafc;padding:20px;">' . receipt_inner($sale, $items, $shop, $branch, $staff) . '</div>';
-        $sent = (new MailService())->send($to, 'Receipt ' . $sale['receipt_number'] . ' — ' . $shop, $html, 'Receipt ' . $sale['receipt_number'] . ' from ' . $shop);
+        $html = '<div style="background:#f8fafc;padding:20px;">' . receipt_inner($sale, $items, $shopName, $shopLogo, $branch, $staff, $shop['receipt_footer'] ?? null) . '</div>';
+        $sent = (new MailService())->send($to, 'Receipt ' . $sale['receipt_number'] . ' — ' . $shopName, $html, 'Receipt ' . $sale['receipt_number'] . ' from ' . $shopName);
         if ($sent) { $flash = 'Receipt sent to ' . $to . '.'; $flashOk = true; }
         else { $flash = 'Could not send the email. Check the mail settings and try again.'; }
     }
@@ -113,7 +117,7 @@ if (!empty($sale['customer_phone'])) {
         $waNum = $d;
     }
 }
-$waText = rawurlencode("Receipt {$sale['receipt_number']} from {$shop}\nTotal: " . money($sale['total']) . "\nThank you!");
+$waText = rawurlencode("Receipt {$sale['receipt_number']} from {$shopName}\nTotal: " . money($sale['total']) . "\nThank you!");
 $waLink = 'https://wa.me/' . $waNum . '?text=' . $waText;
 
 $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
@@ -123,7 +127,7 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Receipt <?php echo htmlspecialchars($sale['receipt_number']); ?> — <?php echo htmlspecialchars($shop); ?></title>
+<title>Receipt <?php echo htmlspecialchars($sale['receipt_number']); ?> — <?php echo htmlspecialchars($shopName); ?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -138,7 +142,7 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
     <div class="actions"><div class="alert <?php echo $flashOk ? 'alert-success' : 'alert-danger'; ?> py-2"><?php echo htmlspecialchars($flash); ?></div></div>
   <?php endif; ?>
 
-  <div class="sheet"><?php echo receipt_inner($sale, $items, $shop, $branch, $staff); ?></div>
+  <div class="sheet"><?php echo receipt_inner($sale, $items, $shopName, $shopLogo, $branch, $staff, $shop['receipt_footer'] ?? null); ?></div>
 
   <div class="actions">
     <div class="d-flex gap-2 mb-2">
@@ -156,8 +160,8 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
       </div>
     </form>
     <div class="d-flex gap-2 mt-3">
-      <a href="/Kitale/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
-      <a href="/Kitale/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
+      <a href="/Rongai/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
+      <a href="/Rongai/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
     </div>
   </div>
 </body>

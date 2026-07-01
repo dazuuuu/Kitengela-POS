@@ -205,7 +205,7 @@ ob_start();
                 }
               ?></td>
               <td class="text-end fw-semibold">KES <?php echo number_format((float)$s['total'],0); ?></td>
-              <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
+              <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Rongai/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
             </tr>
             <?php endforeach; ?>
           </tbody>

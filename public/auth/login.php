@@ -11,11 +11,11 @@ require_once __DIR__ . '/../../app/app.php';
 if (!empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified'])) {
     $sessionRole = $_SESSION['role'] ?? null;
     if ($sessionRole === 'staff') {
-        header('Location: /Kitale/public/staff/dashboard/');
+        header('Location: /Rongai/public/staff/dashboard/');
         exit;
     }
     if ($sessionRole === 'tenant_owner') {
-        header('Location: /Kitale/public/super/dashboard/');
+        header('Location: /Rongai/public/super/dashboard/');
         exit;
     }
     // Unknown/empty role — broken session. Clear it and fall through to login.
@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // First-time staff must change their temporary password before anything else.
             $_SESSION['must_reset'] = !empty($user['must_reset_password']);
             if ($_SESSION['must_reset'] && ($user['role_name'] ?? '') === 'staff') {
-                header('Location: /Kitale/public/staff/reset-password.php');
+                header('Location: /Rongai/public/staff/reset-password.php');
                 exit;
             }
 
             $dest = ($user['role_name'] === 'staff')
-                ? '/Kitale/public/staff/dashboard/'
-                : '/Kitale/public/super/dashboard/';
+                ? '/Rongai/public/staff/dashboard/'
+                : '/Rongai/public/super/dashboard/';
             header('Location: ' . $dest);
             exit;
         }
@@ -100,7 +100,7 @@ ob_start();
 </form>
 <div class="auth-foot">
    
-    <a href="/Kitale/public/auth/forgot-password.php">Forgot password?</a>
+    <a href="/Rongai/public/auth/forgot-password.php">Forgot password?</a>
 </div>
 <?php
 $content = ob_get_clean();

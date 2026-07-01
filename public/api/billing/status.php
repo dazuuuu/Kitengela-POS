@@ -28,7 +28,7 @@ if ($st['status'] === 'success') {
         $_SESSION['first_login']  = true;
         unset($_SESSION['reg_pending']);
     }
-    echo json_encode(['status' => 'success', 'redirect' => '/Kitale/public/super/dashboard/']);
+    echo json_encode(['status' => 'success', 'redirect' => '/Rongai/public/super/dashboard/']);
     exit;
 }
 

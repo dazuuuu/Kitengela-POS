@@ -1,11 +1,11 @@
 <?php
-// public/index.php — Kitale POS · login portal (installable PWA)
+// public/index.php — Rongai POS · login portal (installable PWA)
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-$LOGIN    = '/Kitale/public/auth/login.php';
+$LOGIN    = '/Rongai/public/auth/login.php';
 $loggedIn = !empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified']);
 $role     = $_SESSION['role'] ?? '';
-$dashUrl  = $role === 'staff' ? '/Kitale/public/staff/dashboard/' : '/Kitale/public/super/dashboard/';
+$dashUrl  = $role === 'staff' ? '/Rongai/public/staff/dashboard/' : '/Rongai/public/super/dashboard/';
 $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
 ?>
 <!doctype html>
@@ -13,8 +13,8 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kitale POS — Sign in</title>
-<meta name="description" content="Kitale POS — record sales, track stock, print receipts.">
+<title>Rongai POS — Sign in</title>
+<meta name="description" content="Rongai POS — record sales, track stock, print receipts.">
 <?php include __DIR__ . '/components/pwa_head.php'; ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -163,10 +163,10 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
         <div class="inner">
           <div class="brand">
             <div class="logo-box">
-              <img src="/Kitale/public/assets/images/logo/logo.png" alt="Kitale POS"
+              <img src="/Rongai/public/assets/images/logo/logo.png" alt="Rongai POS"
                    onerror="this.style.display='none';this.parentNode.innerHTML+='<i class=\'fa-solid fa-layer-group logo-fallback\'></i>'">
             </div>
-            <h1>Kitale POS</h1>
+            <h1>Rongai POS</h1>
             <p>Run your shop from your phone</p>
           </div>
 
@@ -177,7 +177,7 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
               <span class="tx"><b>Open the POS</b><span>Continue to your dashboard</span></span>
               <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
             </a>
-            <a class="portal staff" href="/Kitale/public/auth/logout.php">
+            <a class="portal staff" href="/Rongai/public/auth/logout.php">
               <span class="ic"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
               <span class="tx"><b>Switch account</b><span>Log out and sign in as someone else</span></span>
               <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
@@ -207,7 +207,7 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
   <p class="hint" id="iosHint" style="display:none;">
     To install: tap <b>Share</b> <i class="fa-solid fa-arrow-up-from-bracket"></i> then <b>Add to Home Screen</b>.
   </p>
-  <p class="foot">Kitale POS &middot; works on phone &amp; desktop</p>
+  <p class="foot">Rongai POS &middot; works on phone &amp; desktop</p>
 
 <script>
 (function(){

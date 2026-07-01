@@ -5,7 +5,7 @@
 // of the app uses (app/config/mail.php). Key-guarded. DELETE or restrict via
 // web-server IP allowlist before going to production.
 //
-//   http://localhost/Kitale/public/devs/register-tenant.php?key=kitale-dev
+//   http://localhost/Rongai/public/devs/register-tenant.php?key=kitale-dev
 
 declare(strict_types=1);
 require_once __DIR__ . '/../../app/app.php';
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $mail->Timeout = 15;
                         $mail->setFrom(
                             (string) ($cfg['from_email'] ?? 'no-reply@localhost'),
-                            (string) ($cfg['from_name']  ?? 'Kitale POS')
+                            (string) ($cfg['from_name']  ?? 'Rongai POS')
                         );
                         $mail->addAddress($ownerEmail, $ownerName);
 
@@ -169,14 +169,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $mail->Subject = 'Your ' . htmlspecialchars($name) . ' account is ready';
 
                         // ── HTML email body ───────────────────────────────────
-                        $fromName = htmlspecialchars((string) ($cfg['from_name'] ?? 'Kitale POS'));
+                        $fromName = htmlspecialchars((string) ($cfg['from_name'] ?? 'Rongai POS'));
                         $safeShop = htmlspecialchars($name);
                         $safeOwner = htmlspecialchars($ownerName);
                         $safeEmail = htmlspecialchars($ownerEmail);
                         $safePhone = htmlspecialchars($ownerPhone ?: '—');
                         $loginUrl  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
                                    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                                   . '/Kitale/public/auth/login.php';
+                                   . '/Rongai/public/auth/login.php';
 
                         $mail->Body = <<<HTML
 <!DOCTYPE html>

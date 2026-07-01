@@ -70,10 +70,9 @@ $shopName   = $tenant['name'] ?? 'Our Shop';
 $shopPhone  = $tenant['phone'] ?? '';
 $shopAddr   = $tenant['address'] ?? '';
 $currency   = $tenant['currency'] ?? 'KES';
-$logoPath   = $tenant['logo_path'] ?? null;
-$logoUrl    = $logoPath ? '/Kitale' . ltrim($logoPath, '/Kitale') : '/Kitale/public/assets/images/logo/logo.png';
+$logoUrl    = Branding::tenantLogo($tenant);
 
-$baseUrl    = '/Kitale/public/catalogue.php?shop=' . urlencode($shopSlug);
+$baseUrl    = '/Rongai/public/catalogue.php?shop=' . urlencode($shopSlug);
 $shareUrl   = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
             . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
             . $baseUrl;
