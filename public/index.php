@@ -2,7 +2,10 @@
 // public/index.php — Rongai POS · login portal (installable PWA)
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
+require_once __DIR__ . '/../app/helpers/Branding.php';
+
 $LOGIN    = '/Rongai/public/auth/login.php';
+$appLogo  = Branding::DEFAULT_LOGO;
 $loggedIn = !empty($_SESSION['logged_in']) && !empty($_SESSION['otp_verified']);
 $role     = $_SESSION['role'] ?? '';
 $dashUrl  = $role === 'staff' ? '/Rongai/public/staff/dashboard/' : '/Rongai/public/super/dashboard/';
@@ -82,13 +85,13 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
   /* Brand */
   .brand{ text-align:center; margin-bottom:24px; }
   .logo-box{ width:72px; height:72px; border-radius:18px; margin:0 auto 14px;
-             background:linear-gradient(135deg,#0f766e,rgba(45,212,191,.1));
-             border:1px solid rgba(45,212,191,.3);
-             box-shadow:0 0 30px rgba(15,118,110,.4),inset 0 1px 0 rgba(255,255,255,.15);
+             border:1px solid rgba(45,212,191,.35);
+             box-shadow:0 0 28px rgba(15,118,110,.45),inset 0 1px 0 rgba(255,255,255,.12);
              display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .logo-box img{ width:100%; height:100%; object-fit:contain; padding:10px;
-                 filter:brightness(0) invert(1) drop-shadow(0 0 6px rgba(45,212,191,.4)); }
-  .logo-box .logo-fallback{ color:#2dd4bf; font-size:1.6rem; }
+  .logo-box img{ width:100%; height:100%; object-fit:cover; border-radius:17px;
+                 filter:drop-shadow(0 4px 12px rgba(15,118,110,.35)); }
+  .logo-box .logo-fallback{ color:#2dd4bf; font-size:1.6rem; line-height:72px; text-align:center; width:100%;
+                            background:linear-gradient(135deg,#0f172a,#0f766e); }
   .brand h1{ font-size:1.4rem; font-weight:800; color:#fff; letter-spacing:-.02em; margin-bottom:4px; }
   .brand p{ color:#64748b; font-size:.85rem; }
 
@@ -163,8 +166,9 @@ $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES);
         <div class="inner">
           <div class="brand">
             <div class="logo-box">
-              <img src="/Rongai/public/assets/images/logo/logo.png" alt="Rongai POS"
-                   onerror="this.style.display='none';this.parentNode.innerHTML+='<i class=\'fa-solid fa-layer-group logo-fallback\'></i>'">
+              <img src="<?php echo $h($appLogo); ?>" alt="Rongai POS"
+                   width="72" height="72"
+                   onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fa-solid fa-cash-register logo-fallback\'></i>'">
             </div>
             <h1>Rongai POS</h1>
             <p>Run your shop from your phone</p>

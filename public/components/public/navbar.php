@@ -6,6 +6,8 @@
 
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
+require_once dirname(__DIR__, 3) . '/app/helpers/Branding.php';
+
 // Active-link helper. Guarded against double-include.
 if (!function_exists('navIsActive')) {
     function navIsActive(string $segment): string {
@@ -32,7 +34,7 @@ $ismanEmail = 'info@isman.co.ke';
 $ismanLoc   = 'Nairobi, Kenya';
 
 // Logo path (falls back to an inline gear mark if the file is missing).
-$logoPath = '/Rongai/public/assets/images/logo/logo.png';
+$logoPath = Branding::DEFAULT_LOGO;
 $logoExists = isset($_SERVER['DOCUMENT_ROOT'])
     && is_file($_SERVER['DOCUMENT_ROOT'] . $logoPath);
 ?>

@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title ?? 'Modern POS'); ?></title>
+    <title><?php echo htmlspecialchars($page_title ?? 'Rongai POS'); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -63,12 +63,14 @@
         .card-inner{position:relative;z-index:2}
 
         .auth-head{padding:32px 32px 0;text-align:center}
-        .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#2563eb,#7c3aed);
-                   border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
-                   box-shadow:0 0 20px rgba(37,99,235,.5),inset 0 1px 0 rgba(255,255,255,.2);margin-bottom:6px}
-        .logo-icon i{color:#fff;font-size:18px}
-        .logo-name{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:-.02em;display:block}
-        .logo-name span{color:#60a5fa}
+        .logo-box{width:64px;height:64px;border-radius:16px;margin:0 auto 10px;
+                  border:1px solid rgba(45,212,191,.35);
+                  box-shadow:0 0 24px rgba(15,118,110,.4),inset 0 1px 0 rgba(255,255,255,.12);
+                  display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .logo-box img{width:100%;height:100%;object-fit:cover;border-radius:15px;
+                      filter:drop-shadow(0 4px 10px rgba(15,118,110,.35))}
+        .logo-box .logo-fallback{color:#2dd4bf;font-size:1.4rem;line-height:64px;text-align:center;width:100%;
+                                 background:linear-gradient(135deg,#0f172a,#0f766e)}
         .auth-body{padding:8px 32px 32px}
         .badge-wrap{text-align:center;margin:20px 0 6px}
         .badge-secure{display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.15);
@@ -143,17 +145,15 @@
                 <div class="card-sheen" id="sheen"></div>
                 <div class="card-inner">
                     <div class="auth-head">
-                        <div class="logo-icon">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <!-- <span class="logo-name">Modern<span>POS</span></span> -->
                         <?php
                         require_once ROOT_PATH . '/app/helpers/Branding.php';
                         $authLogo = Branding::authLogo(class_exists('Database') ? Database::pdo() : null);
                         ?>
-                        <img src="<?php echo htmlspecialchars($authLogo); ?>" alt="Rongai POS"
-                             style="height:48px;max-width:180px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(37,99,235,.4))"
-                             onerror="this.style.display='none'">
+                        <div class="logo-box">
+                            <img src="<?php echo htmlspecialchars($authLogo); ?>" alt="Rongai POS"
+                                 width="64" height="64"
+                                 onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fas fa-cash-register logo-fallback\'></i>'">
+                        </div>
                     </div>
                     <div class="auth-body">
                         <div class="badge-wrap">
