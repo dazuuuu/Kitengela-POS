@@ -18,19 +18,15 @@ $items = $SA->items($id);
 $shop   = (new Models\TenantModel($pdo))->find(TenantContext::tenantId()) ?: [];
 $shopName = $shop['name'] ?? 'My Shop';
 $shopLogo = Branding::tenantLogo($shop);
-$branch = '';
-if (!empty($sale['branch_id'])) {
-    $b = $pdo->prepare('SELECT title FROM branches WHERE id = ? AND tenant_id = ?');
-    $b->execute([$sale['branch_id'], TenantContext::tenantId()]);
-    $branch = (string) ($b->fetchColumn() ?: '');
-}
+$isOwner  = TenantContext::role() === 'tenant_owner';
+$dashUrl  = $isOwner ? '/Rongai/public/super/dashboard/' : '/Rongai/public/staff/dashboard/';
 $st = $pdo->prepare('SELECT username FROM users WHERE id = ?');
 $st->execute([$sale['staff_id']]);
 $staff = (string) ($st->fetchColumn() ?: 'Staff');
 
 function money($n) { return 'KES ' . number_format((float) $n, 2); }
 
-function receipt_inner(array $sale, array $items, string $shopName, string $shopLogo, string $branch, string $staff, ?string $footer = null): string
+function receipt_inner(array $sale, array $items, string $shopName, string $shopLogo, string $staff, ?string $footer = null): string
 {
     $h = fn($s) => htmlspecialchars((string) $s);
     $rows = '';
@@ -77,7 +73,6 @@ function receipt_inner(array $sale, array $items, string $shopName, string $shop
         . '<div style="text-align:center;border-bottom:2px dashed #cbd5e1;padding-bottom:10px;margin-bottom:10px;">'
         . '<img src="' . $h($shopLogo) . '" alt="" style="max-height:48px;max-width:160px;object-fit:contain;margin-bottom:6px;">'
         . '<div style="font-size:18px;font-weight:700;">' . $h($shopName) . '</div>'
-        . ($branch ? '<div style="font-size:13px;color:#475569;">' . $h($branch) . '</div>' : '')
         . '<div style="font-size:12px;color:#64748b;margin-top:4px;">Receipt ' . $h($sale['receipt_number']) . '</div>'
         . '<div style="font-size:12px;color:#64748b;">' . $h(date('j M Y, g:i a', strtotime($sale['created_at']))) . '</div>'
         . '<div style="font-size:12px;color:#64748b;">' . $h($stype) . ' sale · Served by ' . $h($staff) . '</div>'
@@ -100,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'email
     if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $flash = 'Enter a valid email address.';
     } else {
-        $html = '<div style="background:#f8fafc;padding:20px;">' . receipt_inner($sale, $items, $shopName, $shopLogo, $branch, $staff, $shop['receipt_footer'] ?? null) . '</div>';
+        $html = '<div style="background:#f8fafc;padding:20px;">' . receipt_inner($sale, $items, $shopName, $shopLogo, $staff, $shop['receipt_footer'] ?? null) . '</div>';
         $sent = (new MailService())->send($to, 'Receipt ' . $sale['receipt_number'] . ' — ' . $shopName, $html, 'Receipt ' . $sale['receipt_number'] . ' from ' . $shopName);
         if ($sent) { $flash = 'Receipt sent to ' . $to . '.'; $flashOk = true; }
         else { $flash = 'Could not send the email. Check the mail settings and try again.'; }
@@ -134,15 +129,24 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
   body{background:#f1f5f9;margin:0;padding:24px;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
   .sheet{background:#fff;max-width:420px;margin:0 auto 18px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:24px;}
   .actions{max-width:420px;margin:0 auto;}
-  @media print { body{background:#fff;padding:0;} .actions,.noprint{display:none !important;} .sheet{box-shadow:none;border-radius:0;margin:0;} }
+  .back-bar{max-width:420px;margin:0 auto 14px;}
+  .back-link{display:inline-flex;align-items:center;gap:8px;color:#475569;text-decoration:none;font-size:.9rem;font-weight:600;}
+  .back-link:hover{color:#0f766e;}
+  @media print { body{background:#fff;padding:0;} .actions,.back-bar,.noprint{display:none !important;} .sheet{box-shadow:none;border-radius:0;margin:0;} }
 </style>
 </head>
 <body>
+  <div class="back-bar noprint">
+    <a href="<?php echo htmlspecialchars($dashUrl); ?>" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to dashboard
+    </a>
+  </div>
+
   <?php if ($flash): ?>
     <div class="actions"><div class="alert <?php echo $flashOk ? 'alert-success' : 'alert-danger'; ?> py-2"><?php echo htmlspecialchars($flash); ?></div></div>
   <?php endif; ?>
 
-  <div class="sheet"><?php echo receipt_inner($sale, $items, $shopName, $shopLogo, $branch, $staff, $shop['receipt_footer'] ?? null); ?></div>
+  <div class="sheet"><?php echo receipt_inner($sale, $items, $shopName, $shopLogo, $staff, $shop['receipt_footer'] ?? null); ?></div>
 
   <div class="actions">
     <div class="d-flex gap-2 mb-2">
@@ -160,8 +164,12 @@ $defaultEmail = htmlspecialchars($sale['customer_email'] ?? '');
       </div>
     </form>
     <div class="d-flex gap-2 mt-3">
-      <a href="/Rongai/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
-      <a href="/Rongai/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
+      <?php if ($isOwner): ?>
+        <a href="/Rongai/public/super/sales/" class="btn btn-link flex-fill">All sales</a>
+      <?php else: ?>
+        <a href="/Rongai/public/staff/sales/new.php" class="btn btn-link flex-fill">New sale</a>
+        <a href="/Rongai/public/staff/sales/" class="btn btn-link flex-fill">My sales</a>
+      <?php endif; ?>
     </div>
   </div>
 </body>
