@@ -106,7 +106,7 @@ ob_start();
       <div class="table-responsive">
         <table class="table align-middle mb-0">
           <thead><tr class="text-muted small text-uppercase">
-            <th>Receipt</th><th>When</th><th class="text-center">Items</th><th>Pay</th><th class="text-end">Total</th><th></th>
+            <th>Receipt</th><th>When</th><th class="text-center">Items</th><th>Type</th><th>Pay</th><th class="text-end">Total</th><th></th>
           </tr></thead>
           <tbody>
             <?php foreach ($sales as $s): ?>
@@ -119,8 +119,23 @@ ob_start();
               </td>
               <td class="small text-nowrap"><?php echo date('g:i a', strtotime($s['created_at'])); ?></td>
               <td class="text-center"><span class="badge bg-light text-dark"><?php echo (int)$s['item_count']; ?></span></td>
-              <td><?php echo $s['payment_method']==='cash' ? '<span class="badge bg-light text-dark">Cash</span>' : '<span class="badge bg-success text-white">M-Pesa</span>'; ?></td>
-              <td class="text-end fw-semibold">KES <?php echo number_format((float)$s['total'],0); ?></td>
+              <td><?php echo Models\SaleModel::saleTypeBadge($s); ?></td>
+              <td class="small"><?php
+                $pm = $s['payment_method'] ?? 'cash';
+                if ($pm === 'split') {
+                    echo '<span class="badge bg-secondary">Split</span><div class="text-muted" style="font-size:.7rem;">' . htmlspecialchars(Models\SaleModel::paymentLabel($s)) . '</div>';
+                } elseif ($pm === 'cash') {
+                    echo '<span class="badge bg-light text-dark">Cash</span>';
+                } else {
+                    echo '<span class="badge bg-success text-white">M-Pesa</span>';
+                }
+              ?></td>
+              <td class="text-end fw-semibold">
+                KES <?php echo number_format((float)$s['total'],0); ?>
+                <?php if ((float)($s['discount_amount'] ?? 0) > 0): ?>
+                  <div class="text-danger small">−<?php echo number_format((float)$s['discount_amount'], 0); ?> disc.</div>
+                <?php endif; ?>
+              </td>
               <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
             </tr>
             <?php endforeach; ?>

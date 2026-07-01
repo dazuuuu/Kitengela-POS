@@ -39,10 +39,32 @@ function receipt_inner(array $sale, array $items, string $shop, string $branch, 
             . '<td style="padding:4px 0;text-align:right;white-space:nowrap;">' . money($it['line_total']) . '</td>'
             . '</tr>';
     }
-    $payLine = $sale['payment_method'] === 'cash'
-        ? '<tr><td style="color:#64748b;">Cash given</td><td style="text-align:right;">' . money($sale['amount_given']) . '</td></tr>'
-          . '<tr><td style="color:#64748b;">Change</td><td style="text-align:right;">' . money($sale['change_given']) . '</td></tr>'
-        : '<tr><td style="color:#64748b;">Paid by</td><td style="text-align:right;">M-Pesa</td></tr>';
+    $payLine = '';
+    $method = $sale['payment_method'] ?? 'cash';
+    if ($method === 'split') {
+        if ((float)($sale['cash_amount'] ?? 0) > 0) {
+            $payLine .= '<tr><td style="color:#64748b;">Cash</td><td style="text-align:right;">' . money($sale['cash_amount']) . '</td></tr>';
+            if ((float)($sale['change_given'] ?? 0) > 0) {
+                $payLine .= '<tr><td style="color:#64748b;">Change</td><td style="text-align:right;">' . money($sale['change_given']) . '</td></tr>';
+            }
+        }
+        if ((float)($sale['mpesa_amount'] ?? 0) > 0) {
+            $payLine .= '<tr><td style="color:#64748b;">M-Pesa</td><td style="text-align:right;">' . money($sale['mpesa_amount']) . '</td></tr>';
+        }
+    } elseif ($method === 'cash') {
+        $payLine = '<tr><td style="color:#64748b;">Cash given</td><td style="text-align:right;">' . money($sale['amount_given']) . '</td></tr>'
+          . '<tr><td style="color:#64748b;">Change</td><td style="text-align:right;">' . money($sale['change_given']) . '</td></tr>';
+    } else {
+        $payLine = '<tr><td style="color:#64748b;">Paid by</td><td style="text-align:right;">M-Pesa</td></tr>';
+    }
+    $stype = ($sale['sale_type'] ?? 'retail') === 'wholesale' ? 'Wholesale' : 'Retail';
+    $disc = (float)($sale['discount_amount'] ?? 0);
+    $sub = (float)($sale['subtotal'] ?? $sale['total']);
+    $totals = '';
+    if ($disc > 0) {
+        $totals .= '<tr><td style="color:#64748b;">Subtotal</td><td style="text-align:right;">' . money($sub) . '</td></tr>';
+        $totals .= '<tr><td style="color:#64748b;">Discount</td><td style="text-align:right;">− ' . money($disc) . '</td></tr>';
+    }
     $cust = '';
     if (!empty($sale['customer_name']) || !empty($sale['customer_phone'])) {
         $cust = '<p style="margin:10px 0 0;font-size:12px;color:#64748b;">Customer: ' . $h($sale['customer_name'] ?: '—')
@@ -54,10 +76,11 @@ function receipt_inner(array $sale, array $items, string $shop, string $branch, 
         . ($branch ? '<div style="font-size:13px;color:#475569;">' . $h($branch) . '</div>' : '')
         . '<div style="font-size:12px;color:#64748b;margin-top:4px;">Receipt ' . $h($sale['receipt_number']) . '</div>'
         . '<div style="font-size:12px;color:#64748b;">' . $h(date('j M Y, g:i a', strtotime($sale['created_at']))) . '</div>'
-        . '<div style="font-size:12px;color:#64748b;">Served by ' . $h($staff) . '</div>'
+        . '<div style="font-size:12px;color:#64748b;">' . $h($stype) . ' sale · Served by ' . $h($staff) . '</div>'
         . '</div>'
         . '<table style="width:100%;border-collapse:collapse;font-size:14px;">' . $rows . '</table>'
         . '<table style="width:100%;border-collapse:collapse;font-size:14px;border-top:2px dashed #cbd5e1;margin-top:8px;padding-top:8px;">'
+        . $totals
         . '<tr><td style="font-weight:700;padding-top:8px;">Total</td><td style="text-align:right;font-weight:700;padding-top:8px;">' . money($sale['total']) . '</td></tr>'
         . $payLine . '</table>'
         . $cust

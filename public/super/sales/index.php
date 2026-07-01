@@ -83,6 +83,32 @@ ob_start();
     </div>
   </div>
 </div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm" style="border-radius:14px;">
+      <div class="card-body p-3">
+        <div class="text-muted small text-uppercase fw-semibold mb-1">Retail sales</div>
+        <div class="h5 mb-0 fw-bold"><?php echo (int)($sum['retail'] ?? 0); ?></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm" style="border-radius:14px;">
+      <div class="card-body p-3">
+        <div class="text-muted small text-uppercase fw-semibold mb-1">Wholesale sales</div>
+        <div class="h5 mb-0 fw-bold"><?php echo (int)($sum['wholesale'] ?? 0); ?></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm" style="border-radius:14px;">
+      <div class="card-body p-3">
+        <div class="text-muted small text-uppercase fw-semibold mb-1">Discounts given</div>
+        <div class="h5 mb-0 fw-bold text-danger">KES <?php echo number_format($sum['discount'] ?? 0, 0); ?></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ===== Breakdown row ===== -->
 <?php if ($staffBd || $branchBd): ?>
@@ -154,17 +180,30 @@ ob_start();
       <div class="table-responsive">
         <table class="table align-middle mb-0" id="saleTable">
           <thead><tr class="text-muted small text-uppercase">
-            <th>Receipt</th><th>When</th><th>Branch</th><th>Staff</th><th>Customer</th><th>Pay</th><th class="text-end">Total</th><th></th>
+            <th>Receipt</th><th>When</th><th>Type</th><th>Branch</th><th>Staff</th><th>Customer</th><th>Pay</th><th class="text-end">Total</th><th></th>
           </tr></thead>
           <tbody>
             <?php foreach ($sales as $s): ?>
             <tr data-search="<?php echo strtolower(htmlspecialchars($s['receipt_number'].' '.$s['staff_name'].' '.$s['branch_name'].' '.($s['customer_name']??''))); ?>">
               <td class="fw-semibold small"><?php echo htmlspecialchars($s['receipt_number']); ?></td>
               <td class="small text-nowrap"><?php echo date('j M, g:i a', strtotime($s['created_at'])); ?></td>
+              <td><?php echo Models\SaleModel::saleTypeBadge($s); ?></td>
               <td class="small"><?php echo htmlspecialchars($s['branch_name'] ?: '—'); ?></td>
               <td class="small"><?php echo htmlspecialchars($s['staff_name'] ?: '—'); ?></td>
               <td class="small"><?php echo htmlspecialchars($s['customer_name'] ?: '—'); ?></td>
-              <td><?php echo $s['payment_method']==='cash' ? '<span class="badge bg-light text-dark">Cash</span>' : '<span class="badge bg-success text-white">M-Pesa</span>'; ?></td>
+              <td class="small"><?php
+                $pm = $s['payment_method'] ?? 'cash';
+                if ($pm === 'split') {
+                    echo '<span class="badge bg-secondary">Split</span><div class="text-muted" style="font-size:.7rem;">' . htmlspecialchars(Models\SaleModel::paymentLabel($s)) . '</div>';
+                } elseif ($pm === 'cash') {
+                    echo '<span class="badge bg-light text-dark">Cash</span>';
+                } else {
+                    echo '<span class="badge bg-success text-white">M-Pesa</span>';
+                }
+                if ((float)($s['discount_amount'] ?? 0) > 0) {
+                    echo '<div class="text-danger" style="font-size:.7rem;">−KES ' . number_format((float)$s['discount_amount'], 0) . '</div>';
+                }
+              ?></td>
               <td class="text-end fw-semibold">KES <?php echo number_format((float)$s['total'],0); ?></td>
               <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/Kitale/public/staff/sales/receipt.php?id=<?php echo (int)$s['id']; ?>">Receipt</a></td>
             </tr>
