@@ -1,8 +1,8 @@
-/* Kitale POS service worker — makes the app installable + fast.
+/* Rongai POS service worker — makes the app installable + fast.
    Pages are always network-first (so live data + auth stay correct);
    only static assets and the login shell are cached. */
-const CACHE = 'kitale-pos-v1';
-const BASE  = '/Kitale/public';
+const CACHE = 'rongai-pos-v1';
+const BASE  = '/Rongai/public';
 const SHELL = [
   BASE + '/',
   BASE + '/manifest.webmanifest',
