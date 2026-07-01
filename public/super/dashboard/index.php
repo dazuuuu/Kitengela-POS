@@ -25,13 +25,12 @@ for ($i = 6; $i >= 0; $i--) {
     $trendData[] = $found;
 }
 
-$totalSales = max(1, $stats['retail_sales'] + $stats['wholesale_sales']);
-$pctRetail = round($stats['retail_sales'] / $totalSales * 100);
-$pctWholesale = 100 - $pctRetail;
-$rev = max(1, $stats['revenue_all']);
-$pctProfit = min(100, max(0, round($stats['profit_all'] / $rev * 100)));
-$pctCustomers = min(100, $stats['customers'] > 0 ? min(100, $stats['customers'] * 5) : 0);
-$pctProducts = min(100, $stats['products'] > 0 ? min(100, $stats['products'] * 2) : 0);
+$totalSales = $stats['retail_sales'] + $stats['wholesale_sales'];
+$pctRetail = $totalSales > 0 ? round($stats['retail_sales'] / $totalSales * 100) : 0;
+$pctWholesale = $totalSales > 0 ? 100 - $pctRetail : 0;
+$rev = $stats['revenue_all'];
+$pctProfit = $rev > 0 ? min(100, max(0, round($stats['profit_all'] / $rev * 100))) : 0;
+$pctCustomers = (int) ($stats['customer_rate'] ?? 0);
 
 $payCash = $stats['payment_split']['cash'] ?? 0;
 $payMpesa = $stats['payment_split']['mpesa'] ?? 0;
@@ -46,9 +45,11 @@ ob_start();
 .dash-stat .lbl{font-size:.8rem;color:#888;text-transform:uppercase;letter-spacing:.03em;margin-top:2px;}
 .donut-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:24px 16px;text-align:center;height:100%;box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .donut-card h3{font-size:.95rem;font-weight:600;color:#555;margin:0 0 16px;}
-.donut{width:100px;height:100px;border-radius:50%;margin:0 auto 8px;position:relative;display:flex;align-items:center;justify-content:center;}
-.donut::after{content:attr(data-pct);font-size:1.1rem;font-weight:700;color:#333;}
-.donut-inner{position:absolute;inset:18px;background:#fff;border-radius:50%;}
+.donut{width:110px;height:110px;border-radius:50%;margin:0 auto 10px;position:relative;}
+.donut-ring{position:absolute;inset:0;border-radius:50%;}
+.donut-inner{position:absolute;inset:14px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px #f0f0f0;}
+.donut-pct{font-size:1.2rem;font-weight:700;color:#333;line-height:1;}
+.donut-sub{font-size:.72rem;color:#999;margin-top:2px;}
 .chart-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);height:100%;}
 .chart-card h3{font-size:.95rem;font-weight:600;color:#555;margin:0 0 16px;}
 .breadcrumb-dash{font-size:.8rem;color:#999;margin-bottom:4px;}
@@ -95,25 +96,41 @@ ob_start();
   <div class="col-6 col-md-3">
     <div class="donut-card">
       <h3>Profit margin</h3>
-      <div class="donut" data-pct="<?php echo $pctProfit; ?>%" style="background:conic-gradient(#3498db <?php echo $pctProfit; ?>%, #eee 0);"><div class="donut-inner"></div></div>
+      <div class="donut">
+        <div class="donut-ring" style="background:conic-gradient(#3498db <?php echo $pctProfit; ?>%, #eee 0);"></div>
+        <div class="donut-inner"><span class="donut-pct"><?php echo $pctProfit; ?>%</span></div>
+      </div>
+      <div class="donut-sub">KES <?php echo number_format($stats['profit_all'], 0); ?> profit</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="donut-card">
       <h3>Retail sales</h3>
-      <div class="donut" data-pct="<?php echo $pctRetail; ?>%" style="background:conic-gradient(#e74c3c <?php echo $pctRetail; ?>%, #eee 0);"><div class="donut-inner"></div></div>
+      <div class="donut">
+        <div class="donut-ring" style="background:conic-gradient(#e74c3c <?php echo $pctRetail; ?>%, #eee 0);"></div>
+        <div class="donut-inner"><span class="donut-pct"><?php echo $pctRetail; ?>%</span></div>
+      </div>
+      <div class="donut-sub"><?php echo number_format($stats['retail_sales']); ?> of <?php echo number_format($totalSales); ?> sales</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="donut-card">
       <h3>Customers</h3>
-      <div class="donut" data-pct="<?php echo $pctCustomers; ?>%" style="background:conic-gradient(#1abc9c <?php echo $pctCustomers; ?>%, #eee 0);"><div class="donut-inner"></div></div>
+      <div class="donut">
+        <div class="donut-ring" style="background:conic-gradient(#1abc9c <?php echo $pctCustomers; ?>%, #eee 0);"></div>
+        <div class="donut-inner"><span class="donut-pct"><?php echo $pctCustomers; ?>%</span></div>
+      </div>
+      <div class="donut-sub"><?php echo number_format($stats['customers']); ?> unique · <?php echo number_format($stats['sales_with_customer'] ?? 0); ?> tagged sales</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="donut-card">
       <h3>Wholesale</h3>
-      <div class="donut" data-pct="<?php echo $pctWholesale; ?>%" style="background:conic-gradient(#f1c40f <?php echo $pctWholesale; ?>%, #eee 0);"><div class="donut-inner"></div></div>
+      <div class="donut">
+        <div class="donut-ring" style="background:conic-gradient(#f1c40f <?php echo $pctWholesale; ?>%, #eee 0);"></div>
+        <div class="donut-inner"><span class="donut-pct"><?php echo $pctWholesale; ?>%</span></div>
+      </div>
+      <div class="donut-sub"><?php echo number_format($stats['wholesale_sales']); ?> of <?php echo number_format($totalSales); ?> sales</div>
     </div>
   </div>
 </div>

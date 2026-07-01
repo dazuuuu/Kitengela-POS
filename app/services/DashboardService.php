@@ -40,6 +40,21 @@ class DashboardService
         $stmt->execute([$tenantId]);
         $customers = (int) $stmt->fetchColumn();
 
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) AS total,
+                    SUM(CASE WHEN COALESCE(customer_phone,'') != ''
+                              OR COALESCE(customer_email,'') != ''
+                              OR COALESCE(customer_name,'') != ''
+                         THEN 1 ELSE 0 END) AS with_customer
+               FROM sales
+              WHERE tenant_id = ? AND status = 'completed'"
+        );
+        $stmt->execute([$tenantId]);
+        $custRow = $stmt->fetch() ?: ['total' => 0, 'with_customer' => 0];
+        $salesTotal = (int) ($custRow['total'] ?? 0);
+        $salesWithCustomer = (int) ($custRow['with_customer'] ?? 0);
+        $customerRate = $salesTotal > 0 ? round($salesWithCustomer / $salesTotal * 100) : 0;
+
         $stmt = $this->db->prepare("SELECT COALESCE(SUM(buying_price * quantity),0) FROM products WHERE tenant_id = ?");
         $stmt->execute([$tenantId]);
         $stockValue = (float) $stmt->fetchColumn();
@@ -51,6 +66,8 @@ class DashboardService
             'sales_all'       => (int) $all['c'],
             'revenue_all'     => round((float) $all['revenue'], 2),
             'customers'       => $customers,
+            'customer_rate'   => $customerRate,
+            'sales_with_customer' => $salesWithCustomer,
             'profit_today'    => $this->estimateProfit($tenantId, 'today'),
             'profit_all'      => $this->estimateProfit($tenantId, 'all'),
             'retail_sales'    => $this->saleTypeCount($tenantId, 'retail'),
