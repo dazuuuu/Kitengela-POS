@@ -24,12 +24,59 @@ class TenantModel extends Model
     /** Whitelisted business-settings update. Caller passes their own tenant id. */
     public function updateSettings(int $tenantId, array $data): bool
     {
+        self::ensureSettingsSchema($this->db);
+
         $allowed = ['name', 'logo_path', 'currency', 'phone', 'email', 'website', 'address', 'location', 'kra_pin', 'receipt_footer'];
         $clean = array_intersect_key($data, array_flip($allowed));
+        $columns = self::columnNames($this->db);
+        $clean = array_intersect_key($clean, array_flip($columns));
         if (!$clean) {
             return false;
         }
         return $this->update($tenantId, $clean);
+    }
+
+    /** Add Settings columns when migration 024 was not run yet (safe to call repeatedly). */
+    public static function ensureSettingsSchema(\PDO $db): void
+    {
+        $existing = self::columnNames($db);
+        $needed = [
+            'email'    => 'VARCHAR(255) NULL',
+            'website'  => 'VARCHAR(255) NULL',
+            'location' => 'VARCHAR(255) NULL',
+            'kra_pin'  => 'VARCHAR(30) NULL',
+        ];
+        foreach ($needed as $col => $def) {
+            if (in_array($col, $existing, true)) {
+                continue;
+            }
+            try {
+                $db->exec("ALTER TABLE tenants ADD COLUMN {$col} {$def}");
+                $existing[] = $col;
+            } catch (\PDOException $e) {
+                // Column may have been added concurrently; ignore duplicate-column errors.
+                if ($e->getCode() !== '42S21' && !str_contains($e->getMessage(), 'Duplicate column')) {
+                    throw $e;
+                }
+                self::$columnCache = null;
+                $existing = self::columnNames($db);
+            }
+        }
+        self::$columnCache = $existing;
+    }
+
+    /** @var string[]|null */
+    private static ?array $columnCache = null;
+
+    /** @return string[] */
+    public static function columnNames(\PDO $db): array
+    {
+        if (self::$columnCache !== null) {
+            return self::$columnCache;
+        }
+        $stmt = $db->query('SHOW COLUMNS FROM tenants');
+        self::$columnCache = $stmt ? array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'Field') : [];
+        return self::$columnCache;
     }
 
     /** Unique slug from a business name. */

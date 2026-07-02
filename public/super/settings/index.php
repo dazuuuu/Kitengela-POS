@@ -6,6 +6,11 @@ PageGuard::capability(Capabilities::SETTINGS_MANAGE);
 $pdo = Database::pdo();
 $tenantId = TenantContext::tenantId();
 $tenantModel = new Models\TenantModel($pdo);
+try {
+    Models\TenantModel::ensureSettingsSchema($pdo);
+} catch (\PDOException $e) {
+    $_SESSION['flash']['error'] = 'Database update needed for Settings. Ask your host to run migration 024_tenant_business_credentials.sql.';
+}
 $base = Branding::PUBLIC_URL . '/super/settings/';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
