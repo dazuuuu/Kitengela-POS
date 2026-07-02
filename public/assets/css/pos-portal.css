@@ -1,0 +1,451 @@
+/* Rongai POS — commercial portal shell (login + auth) */
+:root {
+  --pos-navy: #0f172a;
+  --pos-teal: #0f766e;
+  --pos-teal-dark: #0d5c56;
+  --pos-surface: #ffffff;
+  --pos-bg: #eef1f4;
+  --pos-border: #e2e8f0;
+  --pos-muted: #64748b;
+  --pos-text: #1e293b;
+  --pos-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .08);
+  --pos-shadow-lg: 0 2px 4px rgba(15, 23, 42, .04), 0 16px 40px rgba(15, 23, 42, .12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.pos-portal {
+  min-height: 100svh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: var(--pos-text);
+  background: var(--pos-bg);
+  overflow-x: hidden;
+}
+
+/* Subtle grid — no gradients */
+.pos-portal-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--pos-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, #d1d5db 1px, transparent 0);
+  background-size: 28px 28px;
+  opacity: .45;
+}
+
+.pos-portal-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .pos-portal-shell {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Brand panel */
+.pos-brand-panel {
+  display: none;
+  background: var(--pos-navy);
+  color: #fff;
+  padding: 48px 56px;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .pos-brand-panel { display: flex; }
+}
+
+.pos-brand-panel::before {
+  content: '';
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  width: 220px;
+  height: 220px;
+  border: 24px solid rgba(255, 255, 255, .06);
+  border-radius: 24px;
+  transform: rotate(12deg);
+}
+
+.pos-brand-panel::after {
+  content: '';
+  position: absolute;
+  top: 40px;
+  right: 80px;
+  width: 80px;
+  height: 80px;
+  background: var(--pos-teal);
+  border-radius: 16px;
+  opacity: .15;
+  transform: rotate(-8deg);
+}
+
+.pos-brand-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.pos-brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pos-brand-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.pos-brand-tag {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin-bottom: 36px;
+  position: relative;
+  z-index: 1;
+}
+
+.pos-feature-list {
+  list-style: none;
+  position: relative;
+  z-index: 1;
+}
+
+.pos-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  color: #cbd5e1;
+  font-size: .92rem;
+}
+
+.pos-feature-list i {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(15, 118, 110, .25);
+  color: #5eead4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .85rem;
+}
+
+/* Card stage — subtle 3D */
+.pos-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  perspective: 1200px;
+}
+
+.pos-card-wrap {
+  width: 100%;
+  max-width: 420px;
+  transform-style: preserve-3d;
+  transition: transform .12s ease;
+  position: relative;
+}
+
+.pos-card-shadow {
+  position: absolute;
+  inset: 12px 8px -12px;
+  background: rgba(15, 23, 42, .08);
+  border-radius: 20px;
+  transform: translateZ(-30px);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.pos-card {
+  background: var(--pos-surface);
+  border: 1px solid var(--pos-border);
+  border-radius: 20px;
+  box-shadow: var(--pos-shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.pos-card-top {
+  height: 4px;
+  background: var(--pos-teal);
+}
+
+.pos-card-body {
+  padding: 32px 28px;
+}
+
+.pos-mobile-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 900px) {
+  .pos-mobile-brand { display: none; }
+}
+
+.pos-mobile-brand .pos-brand-logo {
+  margin: 0 auto 12px;
+}
+
+.pos-mobile-brand h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--pos-navy);
+}
+
+.pos-mobile-brand p {
+  font-size: .85rem;
+  color: var(--pos-muted);
+  margin-top: 4px;
+}
+
+.pos-lede {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--pos-muted);
+  text-align: center;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* Portal / role buttons */
+.pos-portal-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--pos-text);
+  background: #f8fafc;
+  border: 1px solid var(--pos-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.pos-portal-btn:last-of-type { margin-bottom: 0; }
+
+.pos-portal-btn:hover,
+.pos-portal-btn:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, .1);
+  border-color: #cbd5e1;
+  outline: none;
+}
+
+.pos-portal-btn.owner:hover { border-color: var(--pos-teal); }
+.pos-portal-btn.staff:hover { border-color: #2563eb; }
+
+.pos-portal-btn .ic {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  background: var(--pos-navy);
+  color: #fff;
+}
+
+.pos-portal-btn.staff .ic { background: #1e40af; }
+
+.pos-portal-btn .tx { flex: 1; }
+.pos-portal-btn .tx b {
+  display: block;
+  font-size: .98rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.pos-portal-btn .tx span { font-size: .8rem; color: var(--pos-muted); }
+.pos-portal-btn .go { color: #94a3b8; font-size: .9rem; transition: transform .18s; }
+.pos-portal-btn:hover .go { transform: translateX(3px); color: var(--pos-teal); }
+
+.pos-install-btn {
+  display: none;
+  width: 100%;
+  margin-top: 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--pos-teal);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, .3);
+}
+
+.pos-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, .35);
+  background: var(--pos-teal-dark);
+}
+
+.pos-foot {
+  text-align: center;
+  color: var(--pos-muted);
+  font-size: .75rem;
+  margin-top: 20px;
+}
+
+.pos-hint {
+  text-align: center;
+  color: var(--pos-muted);
+  font-size: .76rem;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+/* Auth form overrides */
+.pos-auth-head { text-align: center; margin-bottom: 8px; }
+.pos-auth-head .pos-brand-logo { margin: 0 auto 10px; border-color: var(--pos-border); }
+.pos-auth-head h2 { font-size: 1.25rem; font-weight: 800; color: var(--pos-navy); }
+
+.pos-badge-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  color: var(--pos-teal-dark);
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.pos-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pos-teal);
+}
+
+.pos-portal .form-label {
+  display: block;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--pos-muted);
+  margin-bottom: 6px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.pos-portal .field-wrap { position: relative; }
+
+.pos-portal .field-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.pos-portal .form-control {
+  background: #f8fafc !important;
+  border: 1px solid var(--pos-border) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px 12px 42px !important;
+  color: var(--pos-text) !important;
+  font-size: .92rem !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+
+.pos-portal .form-control::placeholder { color: #94a3b8; }
+
+.pos-portal .form-control:focus {
+  background: #fff !important;
+  border-color: var(--pos-teal) !important;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .12) !important;
+  color: var(--pos-text) !important;
+}
+
+.pos-portal .btn-auth {
+  width: 100%;
+  padding: 13px;
+  font-weight: 700;
+  font-size: .95rem;
+  background: var(--pos-teal) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  transition: transform .18s, box-shadow .18s !important;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, .25);
+}
+
+.pos-portal .btn-auth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, .3) !important;
+  background: var(--pos-teal-dark) !important;
+}
+
+.pos-portal .auth-alert {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .88rem;
+  margin-bottom: 16px;
+}
+
+.pos-portal .auth-alert.err { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.pos-portal .auth-alert.ok { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+.pos-portal .auth-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--pos-navy);
+  text-align: center;
+  margin: 12px 0 6px;
+}
+
+.pos-portal .auth-sub {
+  color: var(--pos-muted);
+  font-size: .88rem;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.pos-portal .otp-input {
+  letter-spacing: .5em;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .pos-card-body { padding: 24px 20px; }
+  .pos-stage { padding: 20px 16px; }
+}
